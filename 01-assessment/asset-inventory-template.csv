@@ -1,0 +1,11 @@
+asset_id,asset_name,asset_type,layer,category,status,owner,location,description,digital_readiness,integration_potential,priority,notes
+A001,Municipal Wi-Fi Network,infrastructure,1,connectivity,operational,City of St. Louis,Delmar Corridor,Community Wi-Fi mesh network covering 2.3 miles of Delmar Blvd,4,5,high,Backbone for Layer 1
+A002,Cortex Innovation Hub,physical,0,real_estate,operational,Cortex Innovation Community,Midtown St. Louis,$1.3B innovation district - biotech and tech clustering,2,3,medium,Transition candidate to network node
+A003,AWS Cloud Account,infrastructure,1,compute,operational,Digital District Authority,Cloud,Production cloud compute environment with Lambda and DynamoDB,5,5,high,Foundation for all digital services
+A004,Claude API Integration,intelligence,2,ai_model,operational,Digital District Authority,Cloud,AI model access for decision support and document generation,5,5,high,Core intelligence layer
+A005,Delmar Loop Cultural District,physical,0,cultural,operational,Loop Special Business District,University City/St. Louis,Entertainment and cultural corridor with 100+ businesses,3,4,high,Prime Digital Mainstreet candidate
+A006,MetroLink Light Rail,physical,0,transit,operational,Bi-State Development,Regional,Light rail station at Delmar Loop - regional connectivity,2,3,medium,Transit node for physical access
+A007,Open Data Portal,infrastructure,1,data,partial,City of St. Louis,Cloud,Municipal open data with 50+ datasets - limited API access,3,4,high,Needs API layer upgrade
+A008,39 North AgTech District,physical,0,real_estate,operational,39 North,Creve Coeur/Olivette,Agricultural technology innovation district,2,3,medium,Potential specialized node
+A009,Downtown North NGA Campus,physical,0,real_estate,construction,NGA/City of St. Louis,North Downtown,National Geospatial-Intelligence Agency new campus,2,4,medium,Geospatial data node potential
+A010,University Tech Transfer Office,institutional,2,knowledge,operational,Washington University,Clayton/Midtown,Technology commercialization and licensing,2,3,medium,Legacy gatekeeper - bridge to AI layer

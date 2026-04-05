@@ -1,209 +1,624 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { GraduationCap, Briefcase, Award, ChevronRight, Star, BookOpen, Users, Code, TrendingUp } from 'lucide-react';
 
-interface MajorPathway {
-  major: string;
+interface MajorData {
+  name: string;
   color: string;
   workstreams: string[];
-  tools: { name: string; path: string }[];
+  tools: string[];
   tracks: string[];
   skills: string[];
-  semester1: string;
-  semester2: string;
-  semester3: string;
-  career: string[];
 }
 
-const majors: MajorPathway[] = [
-  { major: 'Computer Science', color: '#3b82f6', workstreams: ['Infrastructure (cloud, APIs)', 'Intelligence (AI tools, MCP)', 'Platform development'], tools: [{ name: 'Timeline', path: '/timeline' }, { name: 'Dashboard', path: '/dashboard' }], tracks: ['Cloud Infrastructure Lab', 'AI Business Tools Development', 'API Integration Engineering'], skills: ['AWS/Cloud Architecture', 'TypeScript/React', 'Prompt Engineering', 'Serverless Architecture'], semester1: 'AWS fundamentals, serverless patterns, DD codebase orientation', semester2: 'Build and deploy a cloud service or AI tool for the DD', semester3: 'Lead a technical workstream, mentor new students', career: ['Cloud Engineer at DD Authority', 'AI Engineer at civic tech org', 'CTO of DD-launched startup'] },
-  { major: 'Data Science', color: '#3b82f6', workstreams: ['Metrics & analytics', 'EII computation', 'Equity audits', 'Dashboard development'], tools: [{ name: 'Dashboard', path: '/dashboard' }, { name: 'Community Dashboard', path: '/community' }], tracks: ['Economic Impact Analysis', 'Digital Equity Audit'], skills: ['Python/SQL', 'Data Visualization', 'Statistical Analysis', 'Impact Evaluation'], semester1: 'DD data sources, EII framework, baseline data collection', semester2: 'Build equity dashboards, produce neighborhood-level analysis', semester3: 'Lead quarterly impact report, design automated reporting', career: ['Data Analyst at city government', 'Impact analyst at foundation', 'Analytics lead at DD Authority'] },
-  { major: 'Urban Planning', color: '#8b5cf6', workstreams: ['Corridor selection', 'Community engagement', 'Equity analysis', 'Policy design'], tools: [{ name: 'Corridor Selector', path: '/corridor' }, { name: 'Scorecard', path: '/scorecard' }], tracks: ['Community Engagement Research', 'Digital Equity Audit'], skills: ['GIS Analysis', 'Community Facilitation', 'Policy Analysis', 'Mixed Methods Research'], semester1: 'DD framework, corridor assessment methodology, community mapping', semester2: 'Conduct site assessments, facilitate listening sessions, write policy briefs', semester3: 'Lead community engagement for new corridor expansion', career: ['Digital equity planner at city', 'Community development specialist', 'Urban tech consultant'] },
-  { major: 'Public Policy', color: '#8b5cf6', workstreams: ['Funding models', 'Regulatory frameworks', 'Data governance', 'Digital equity policy'], tools: [{ name: 'Proposal Builder', path: '/proposal' }, { name: 'Objection Handler', path: '/objections' }], tracks: ['Legal & Policy Framework', 'Grant Writing & Funding'], skills: ['Policy Analysis', 'Grant Writing', 'Regulatory Compliance', 'Stakeholder Engagement'], semester1: 'DD policy landscape, existing regulations, funding mechanisms', semester2: 'Draft data governance policies, write grant applications', semester3: 'Lead policy working group, testify at council hearings', career: ['Policy analyst at city', 'Program officer at foundation', 'Government relations at tech org'] },
-  { major: 'Business / Entrepreneurship', color: '#10b981', workstreams: ['Business formation pipeline', 'Vertical acceleration tracks', 'Marketplace', 'Mentorship'], tools: [{ name: 'Messaging Generator', path: '/messaging' }, { name: 'Proposal Builder', path: '/proposal' }], tracks: ['Entrepreneurship in Residence', 'Grant Writing & Funding'], skills: ['Business Planning', 'Financial Modeling', 'Market Analysis', 'Pitch Development'], semester1: 'DD ecosystem overview, AI-assisted business planning tools', semester2: 'Launch a business using DD tools, document the process', semester3: 'Mentor next cohort, lead vertical acceleration track', career: ['Founder of DD-launched business', 'Ecosystem manager at DD Authority', 'Innovation consultant'] },
-  { major: 'Economics', color: '#10b981', workstreams: ['Economic impact analysis', 'EII development', 'Cost-benefit analysis', 'ROI modeling'], tools: [{ name: 'Dashboard', path: '/dashboard' }, { name: 'Scorecard', path: '/scorecard' }], tracks: ['Economic Impact Analysis'], skills: ['Econometrics', 'Impact Evaluation', 'Cost Modeling', 'Public Finance'], semester1: 'EII framework, public finance of digital infrastructure', semester2: 'Conduct cost-benefit analysis, build economic models', semester3: 'Publish research, present at conferences', career: ['Economic analyst at city', 'Research economist at think tank', 'Impact evaluator'] },
-  { major: 'Communications / Journalism', color: '#ec4899', workstreams: ['PR strategy', 'Press releases', 'Social media', 'Community storytelling'], tools: [{ name: 'Communications', path: '/communications' }, { name: 'Messaging Generator', path: '/messaging' }], tracks: ['Data Journalism & Storytelling'], skills: ['Media Relations', 'Content Strategy', 'Data Journalism', 'Storytelling'], semester1: 'DD communication plan, media landscape, key stakeholders', semester2: 'Write press materials, produce newsletter, manage social channels', semester3: 'Lead communications strategy for major milestone', career: ['Communications director at DD', 'Civic tech journalist', 'Public affairs specialist'] },
-  { major: 'Graphic Design / UX', color: '#06b6d4', workstreams: ['Platform UI/UX', 'Dashboard design', 'Community interfaces', 'Brand identity'], tools: [{ name: 'Community Dashboard', path: '/community' }], tracks: ['UX/UI Design Studio'], skills: ['Figma', 'User Research', 'Accessibility Design', 'Design Systems'], semester1: 'DD user personas, accessibility requirements, existing interfaces', semester2: 'Design and test new interfaces with real entrepreneurs', semester3: 'Lead design system, mentor junior designers', career: ['Product designer at civic tech', 'UX lead at DD Authority', 'Design consultant'] },
-  { major: 'Social Work', color: '#ef4444', workstreams: ['Community engagement', 'Equity audits', 'Digital literacy', 'Support systems'], tools: [{ name: 'Stakeholder Tracker', path: '/stakeholders' }, { name: 'Community Dashboard', path: '/community' }], tracks: ['Community Engagement Research', 'Digital Equity Audit'], skills: ['Community Organizing', 'Cultural Competency', 'Needs Assessment', 'Program Evaluation'], semester1: 'DD equity framework, community asset mapping', semester2: 'Facilitate listening sessions, conduct needs assessments', semester3: 'Lead equity subcommittee of advisory board', career: ['Community program manager', 'Digital equity coordinator', 'Nonprofit director'] },
-  { major: 'Law', color: '#f59e0b', workstreams: ['Data governance', 'Partnership agreements', 'Privacy policies', 'Regulatory navigation'], tools: [{ name: 'Proposal Builder', path: '/proposal' }, { name: 'Objection Handler', path: '/objections' }], tracks: ['Legal & Policy Framework'], skills: ['Contract Drafting', 'Privacy Law', 'Municipal Law', 'IP Policy'], semester1: 'DD legal landscape, data governance frameworks, existing agreements', semester2: 'Draft MOUs, privacy policies, data sharing agreements', semester3: 'Advise on cross-city legal framework for DDIS compliance', career: ['Municipal technology counsel', 'Privacy officer', 'Tech policy attorney'] },
-  { major: 'Education', color: '#06b6d4', workstreams: ['Digital literacy curriculum', 'AI training programs', 'Community workshops'], tools: [{ name: 'Presentations', path: '/presentations' }], tracks: ['Community Engagement Research'], skills: ['Curriculum Design', 'Adult Education', 'Instructional Design', 'Assessment'], semester1: 'Digital literacy landscape, DD tools and capabilities', semester2: 'Design and pilot AI literacy curriculum', semester3: 'Train community facilitators, scale to all wards', career: ['Digital literacy program director', 'Instructional designer', 'EdTech specialist'] },
-  { major: 'Electrical Engineering', color: '#f59e0b', workstreams: ['Wi-Fi mesh design', 'IoT sensors', 'Edge computing', 'Network engineering'], tools: [{ name: 'Timeline', path: '/timeline' }, { name: 'Tracker', path: '/tracker' }], tracks: ['Wi-Fi Network Design'], skills: ['RF Engineering', 'Network Design', 'Embedded Systems', 'Site Surveying'], semester1: 'Mesh networking fundamentals, corridor assessment methods', semester2: 'Design and test Wi-Fi deployment for new corridor', semester3: 'Lead infrastructure expansion to additional corridors', career: ['Network engineer at ISP/municipal', 'IoT infrastructure engineer', 'Smart city consultant'] },
-  { major: 'Information Science', color: '#3b82f6', workstreams: ['Data management', 'API design', 'Interoperability standards', 'Knowledge bases'], tools: [{ name: 'Directory', path: '/directory' }, { name: 'Network', path: '/network' }], tracks: ['API Integration Engineering'], skills: ['Information Architecture', 'Metadata Standards', 'API Design', 'Data Standards'], semester1: 'DD data model, DDIS standard, existing API catalog', semester2: 'Design data standards, build knowledge base architecture', semester3: 'Lead interoperability working group', career: ['Data architect', 'Standards engineer', 'Knowledge manager'] },
-  { major: 'Public Health', color: '#ef4444', workstreams: ['Health data integration', 'Community health metrics', 'Digital health access'], tools: [{ name: 'Dashboard', path: '/dashboard' }, { name: 'Community Dashboard', path: '/community' }], tracks: ['Digital Equity Audit'], skills: ['Epidemiology', 'Health Informatics', 'Community Health Assessment', 'Data Analysis'], semester1: 'Health equity frameworks, DD health-adjacent metrics', semester2: 'Design health outcome tracking for DD entrepreneurs', semester3: 'Publish health impact research', career: ['Health informatics specialist', 'Community health analyst', 'Digital health equity researcher'] },
-  { major: 'Political Science', color: '#8b5cf6', workstreams: ['Governance models', 'Stakeholder analysis', 'Coalition building', 'Policy advocacy'], tools: [{ name: 'Stakeholder Tracker', path: '/stakeholders' }], tracks: ['Grant Writing & Funding'], skills: ['Political Analysis', 'Coalition Building', 'Public Administration', 'Advocacy'], semester1: 'DD governance model, stakeholder landscape, political dynamics', semester2: 'Map stakeholders, support council briefings, analyze politics', semester3: 'Lead governance transition planning', career: ['Policy advisor', 'Government affairs director', 'Civic innovation manager'] },
+const majors: MajorData[] = [
+  {
+    name: 'Computer Science',
+    color: '#3b82f6',
+    workstreams: ['Infrastructure (cloud, APIs)', 'Intelligence (AI tools, MCP)', 'Platform development'],
+    tools: ['Timeline', 'Dashboard'],
+    tracks: ['Technical Infrastructure Track', 'AI/ML Engineering Track'],
+    skills: ['AWS', 'TypeScript', 'Prompt engineering', 'Serverless architecture'],
+  },
+  {
+    name: 'Data Science',
+    color: '#3b82f6',
+    workstreams: ['Metrics & analytics', 'EII computation', 'Equity audits', 'Dashboard development'],
+    tools: ['Dashboard', 'Community Dashboard'],
+    tracks: ['Data Analytics Track', 'Equity Measurement Track'],
+    skills: ['Python', 'SQL', 'Data visualization', 'Statistical analysis'],
+  },
+  {
+    name: 'Urban Planning',
+    color: '#8b5cf6',
+    workstreams: ['Corridor selection', 'Community engagement', 'Equity analysis', 'Policy design'],
+    tools: ['Corridor Selector', 'Scorecard'],
+    tracks: ['Community Planning Track', 'Equity Analysis Track'],
+    skills: ['GIS', 'Community facilitation', 'Policy analysis', 'Mixed methods research'],
+  },
+  {
+    name: 'Public Policy',
+    color: '#8b5cf6',
+    workstreams: ['Funding models', 'Regulatory frameworks', 'Data governance', 'Digital equity policy'],
+    tools: ['Proposal Builder', 'Objection Handler'],
+    tracks: ['Policy & Governance Track', 'Funding Strategy Track'],
+    skills: ['Policy analysis', 'Grant writing', 'Regulatory compliance', 'Stakeholder engagement'],
+  },
+  {
+    name: 'Business/Entrepreneurship',
+    color: '#10b981',
+    workstreams: ['Business formation pipeline', 'Vertical tracks', 'Marketplace', 'Mentorship'],
+    tools: ['Messaging Generator', 'Proposal Builder'],
+    tracks: ['Entrepreneur Support Track', 'Business Development Track'],
+    skills: ['Business planning', 'Financial modeling', 'Market analysis', 'Pitch development'],
+  },
+  {
+    name: 'Economics',
+    color: '#10b981',
+    workstreams: ['Economic impact analysis', 'EII development', 'Cost-benefit analysis', 'ROI modeling'],
+    tools: ['Dashboard', 'Scorecard'],
+    tracks: ['Impact Measurement Track', 'Economic Modeling Track'],
+    skills: ['Econometrics', 'Impact evaluation', 'Cost modeling', 'Public finance'],
+  },
+  {
+    name: 'Communications/Journalism',
+    color: '#ec4899',
+    workstreams: ['PR strategy', 'Press releases', 'Social media', 'Community storytelling'],
+    tools: ['Communications', 'Messaging Generator', 'Presentations'],
+    tracks: ['Communications Track', 'Community Storytelling Track'],
+    skills: ['Media relations', 'Content strategy', 'Data journalism', 'Storytelling'],
+  },
+  {
+    name: 'Graphic Design/UX',
+    color: '#06b6d4',
+    workstreams: ['Platform UI/UX', 'Dashboard design', 'Community-facing interfaces', 'Brand identity'],
+    tools: ['Community Dashboard'],
+    tracks: ['Design Systems Track', 'User Experience Track'],
+    skills: ['Figma', 'User research', 'Accessibility design', 'Design systems'],
+  },
+  {
+    name: 'Social Work',
+    color: '#ef4444',
+    workstreams: ['Community engagement', 'Equity audits', 'Digital literacy programs', 'Support systems'],
+    tools: ['Stakeholder Tracker', 'Community Dashboard'],
+    tracks: ['Community Engagement Track', 'Digital Equity Track'],
+    skills: ['Community organizing', 'Cultural competency', 'Needs assessment', 'Program evaluation'],
+  },
+  {
+    name: 'Law',
+    color: '#f59e0b',
+    workstreams: ['Data governance', 'Partnership agreements', 'Privacy policies', 'Regulatory navigation'],
+    tools: ['Proposal Builder', 'Objection Handler'],
+    tracks: ['Legal & Governance Track', 'Policy Compliance Track'],
+    skills: ['Contract drafting', 'Privacy law', 'Municipal law', 'IP policy'],
+  },
+  {
+    name: 'Education',
+    color: '#10b981',
+    workstreams: ['Digital literacy curriculum', 'AI training programs', 'Community workshops'],
+    tools: ['Presentations'],
+    tracks: ['Digital Literacy Track', 'Training & Workshop Track'],
+    skills: ['Curriculum design', 'Adult education', 'Instructional design', 'Assessment'],
+  },
+  {
+    name: 'Electrical Engineering',
+    color: '#f59e0b',
+    workstreams: ['Wi-Fi mesh design', 'IoT sensors', 'Edge computing', 'Network engineering'],
+    tools: ['Timeline', 'Tracker'],
+    tracks: ['Network Infrastructure Track', 'IoT Engineering Track'],
+    skills: ['RF engineering', 'Network design', 'Embedded systems', 'Site surveying'],
+  },
+  {
+    name: 'Information Science',
+    color: '#3b82f6',
+    workstreams: ['Data management', 'API design', 'Interoperability standards', 'Knowledge bases'],
+    tools: ['Directory', 'Network'],
+    tracks: ['Data Architecture Track', 'Platform Integration Track'],
+    skills: ['Information architecture', 'Metadata', 'API design', 'Data standards'],
+  },
+  {
+    name: 'Public Health',
+    color: '#ef4444',
+    workstreams: ['Health data integration', 'Community health metrics', 'Digital health access'],
+    tools: ['Dashboard', 'Community Dashboard'],
+    tracks: ['Health Informatics Track', 'Community Health Track'],
+    skills: ['Epidemiology', 'Health informatics', 'Community health assessment'],
+  },
+  {
+    name: 'Political Science',
+    color: '#8b5cf6',
+    workstreams: ['Governance models', 'Stakeholder analysis', 'Coalition building', 'Policy advocacy'],
+    tools: ['Stakeholder Tracker', 'Governance model docs'],
+    tracks: ['Governance & Policy Track', 'Coalition Building Track'],
+    skills: ['Political analysis', 'Coalition building', 'Public administration'],
+  },
 ];
 
-const skillsMatrix = [
-  { skill: 'Cloud Architecture', demand: 'Very High', workstreams: ['Infrastructure', 'Platform Dev'] },
-  { skill: 'AI / Prompt Engineering', demand: 'Very High', workstreams: ['Intelligence', 'Applications'] },
-  { skill: 'Data Analysis', demand: 'High', workstreams: ['Metrics', 'Equity', 'Impact'] },
-  { skill: 'Community Engagement', demand: 'High', workstreams: ['Community', 'Governance'] },
-  { skill: 'Policy Writing', demand: 'High', workstreams: ['Policy', 'Governance', 'Funding'] },
-  { skill: 'UX Design', demand: 'High', workstreams: ['Platform Dev', 'Applications'] },
-  { skill: 'API Development', demand: 'High', workstreams: ['Infrastructure', 'Integration'] },
-  { skill: 'Project Management', demand: 'Medium', workstreams: ['All workstreams'] },
-  { skill: 'Public Speaking', demand: 'Medium', workstreams: ['Communications', 'Governance'] },
-  { skill: 'Grant Writing', demand: 'Medium', workstreams: ['Funding', 'Policy'] },
-  { skill: 'Data Visualization', demand: 'High', workstreams: ['Metrics', 'Communications'] },
-  { skill: 'Technical Writing', demand: 'Medium', workstreams: ['Infrastructure', 'Integration'] },
-  { skill: 'Stakeholder Management', demand: 'High', workstreams: ['Governance', 'Community'] },
-  { skill: 'Equity Analysis', demand: 'High', workstreams: ['Equity', 'Community', 'Metrics'] },
-  { skill: 'Full-Stack Development', demand: 'Very High', workstreams: ['Platform Dev', 'Applications'] },
+const pathwaySteps = [
+  {
+    semester: 'Semester 1',
+    title: 'Orientation & Foundations',
+    description: 'Platform onboarding, DD fundamentals, foundational skill-building workshops, team assignment.',
+    icon: BookOpen,
+    color: '#3b82f6',
+  },
+  {
+    semester: 'Semester 2',
+    title: 'Active Contribution',
+    description: 'Hands-on work in your assigned DD workstream, weekly deliverables, mentor pairing, portfolio building.',
+    icon: Code,
+    color: '#8b5cf6',
+  },
+  {
+    semester: 'Semester 3 (Optional)',
+    title: 'Leadership & Capstone',
+    description: 'Lead a sub-team or complete a capstone project. Present findings to city stakeholders.',
+    icon: Users,
+    color: '#10b981',
+  },
+  {
+    semester: 'Post-Graduation',
+    title: 'Employment & Startup Pathway',
+    description: 'Full-time roles in DD operations, civic tech startups, consulting, or municipal government positions.',
+    icon: TrendingUp,
+    color: '#ec4899',
+  },
+];
+
+interface SkillRow {
+  skill: string;
+  workstreams: string[];
+  inDemand: boolean;
+}
+
+const skillsMatrix: SkillRow[] = [
+  { skill: 'Cloud Architecture', workstreams: ['Infrastructure', 'Platform Dev'], inDemand: true },
+  { skill: 'AI/Prompt Engineering', workstreams: ['Intelligence', 'Platform Dev', 'Training'], inDemand: true },
+  { skill: 'Data Analysis', workstreams: ['Metrics', 'EII', 'Health Data'], inDemand: true },
+  { skill: 'Community Engagement', workstreams: ['Outreach', 'Equity Audits', 'Digital Literacy'], inDemand: false },
+  { skill: 'Policy Writing', workstreams: ['Governance', 'Funding', 'Regulatory'], inDemand: false },
+  { skill: 'UX Design', workstreams: ['Platform UI', 'Dashboards', 'Brand Identity'], inDemand: true },
+  { skill: 'API Development', workstreams: ['Infrastructure', 'Data Management', 'Interoperability'], inDemand: true },
+  { skill: 'Project Management', workstreams: ['All Workstreams', 'Timeline', 'Coordination'], inDemand: true },
+  { skill: 'Public Speaking', workstreams: ['Community Engagement', 'Presentations', 'Advocacy'], inDemand: false },
+  { skill: 'Grant Writing', workstreams: ['Funding', 'Proposals', 'Policy'], inDemand: false },
+  { skill: 'Data Visualization', workstreams: ['Dashboards', 'Metrics', 'Community Reporting'], inDemand: true },
+  { skill: 'Technical Writing', workstreams: ['Documentation', 'API Specs', 'Training Materials'], inDemand: false },
+  { skill: 'Stakeholder Management', workstreams: ['Coalition Building', 'Governance', 'Outreach'], inDemand: true },
+  { skill: 'Equity Analysis', workstreams: ['EII', 'Equity Audits', 'Community Health'], inDemand: false },
+  { skill: 'Full-Stack Development', workstreams: ['Platform Dev', 'Infrastructure', 'Dashboards'], inDemand: true },
+];
+
+const creditPaths = [
+  {
+    title: 'Independent Study',
+    description: 'Work with a faculty advisor to earn 3-6 credits while contributing to a DD workstream. Define learning objectives, deliverables, and assessment criteria aligned with your department.',
+    icon: BookOpen,
+  },
+  {
+    title: 'Capstone Project',
+    description: 'Use your DD contributions as the basis for a senior capstone. Real stakeholders, real data, real impact -- the strongest possible portfolio piece.',
+    icon: Award,
+  },
+  {
+    title: 'Service Learning',
+    description: 'Many departments offer service learning credit for community-facing work. DD projects in equity, outreach, and digital literacy qualify at most institutions.',
+    icon: Users,
+  },
+  {
+    title: 'Research Assistantship',
+    description: 'Partner with faculty researching civic tech, digital equity, or economic development. DD provides unique datasets and real-world research opportunities.',
+    icon: TrendingUp,
+  },
 ];
 
 export default function AcademicPrograms() {
-  const [selectedMajor, setSelectedMajor] = useState<string>('Computer Science');
+  const [selectedMajor, setSelectedMajor] = useState<number>(0);
 
-  const pathway = majors.find(m => m.major === selectedMajor);
+  const major = majors[selectedMajor];
 
   return (
     <div>
       <div className="page-header">
         <span className="page-badge badge-tier2">Academic Integration</span>
         <h1>Academic Programs & Pathways</h1>
-        <p>Every major can contribute to building a Digital District. Select yours to see exactly how your studies connect to real-world impact.</p>
+        <p>
+          Every major has a role in building a Digital District. Whether you study computer science or social work,
+          urban planning or communications, your skills are needed. Find your pathway below.
+        </p>
       </div>
 
-      {/* Major Selector */}
+      {/* Section 1: Major-to-Workstream Mapper */}
       <div className="card" style={{ marginBottom: 24 }}>
-        <h3>Select Your Major</h3>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-          {majors.map(m => (
-            <button
-              key={m.major}
-              className={`btn btn-sm ${selectedMajor === m.major ? 'btn-primary' : 'btn-secondary'}`}
-              style={selectedMajor === m.major ? { background: m.color, borderColor: m.color } : {}}
-              onClick={() => setSelectedMajor(m.major)}
-            >
-              {m.major}
-            </button>
-          ))}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+          <GraduationCap size={20} style={{ color: 'var(--accent)' }} />
+          <h2 style={{ margin: 0 }}>Major-to-Workstream Mapper</h2>
         </div>
-      </div>
+        <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 16 }}>
+          Select your major to see which DD workstreams, tools, and career tracks align with your studies.
+        </p>
 
-      {pathway && (
-        <>
-          {/* Pathway Overview */}
-          <div className="card" style={{ borderLeft: `4px solid ${pathway.color}`, marginBottom: 24 }}>
-            <h2 style={{ marginBottom: 12 }}>{pathway.major}</h2>
-            <div className="grid-2">
-              <div>
-                <div style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text-muted)', marginBottom: 8 }}>DD Workstreams You Can Contribute To</div>
-                <ul style={{ fontSize: 13, paddingLeft: 16, lineHeight: 2 }}>
-                  {pathway.workstreams.map(w => <li key={w}>{w}</li>)}
-                </ul>
-              </div>
-              <div>
-                <div style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text-muted)', marginBottom: 8 }}>Skills You'll Develop</div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                  {pathway.skills.map(s => <span key={s} className="tag" style={{ background: `${pathway.color}22`, color: pathway.color }}>{s}</span>)}
-                </div>
-              </div>
-            </div>
+        <select
+          value={selectedMajor}
+          onChange={(e) => setSelectedMajor(Number(e.target.value))}
+          style={{
+            width: '100%',
+            maxWidth: 400,
+            padding: '10px 14px',
+            borderRadius: 8,
+            border: '1px solid var(--border)',
+            background: 'var(--card)',
+            color: 'var(--text)',
+            fontSize: 15,
+            marginBottom: 24,
+            cursor: 'pointer',
+          }}
+        >
+          {majors.map((m, i) => (
+            <option key={m.name} value={i}>{m.name}</option>
+          ))}
+        </select>
 
-            <div style={{ marginTop: 16 }}>
-              <div style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text-muted)', marginBottom: 8 }}>Platform Tools Most Relevant to You</div>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {pathway.tools.map(t => (
-                  <Link key={t.path} to={t.path} className="btn btn-sm btn-secondary">
-                    {t.name} <ArrowRight size={12} />
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div style={{ marginTop: 16 }}>
-              <div style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text-muted)', marginBottom: 8 }}>Recommended Program Tracks</div>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {pathway.tracks.map(t => (
-                  <Link key={t} to="/students" className="tag tag-green" style={{ textDecoration: 'none' }}>{t}</Link>
-                ))}
-              </div>
-            </div>
+        {/* Selected Major Detail */}
+        <div style={{
+          border: `2px solid ${major.color}`,
+          borderRadius: 12,
+          padding: 24,
+          background: `linear-gradient(135deg, ${major.color}08, ${major.color}15)`,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+            <div style={{
+              width: 12,
+              height: 12,
+              borderRadius: '50%',
+              background: major.color,
+            }} />
+            <h3 style={{ margin: 0, fontSize: 20 }}>{major.name}</h3>
           </div>
 
-          {/* Semester Timeline */}
-          <div className="card" style={{ marginBottom: 24 }}>
-            <h3>Your Learning Pathway</h3>
-            <div style={{ display: 'flex', gap: 1, background: 'var(--border)', borderRadius: 'var(--radius)', overflow: 'hidden', marginTop: 12 }}>
-              {[
-                { label: 'Semester 1: Foundation', content: pathway.semester1, color: '#f59e0b' },
-                { label: 'Semester 2: Contribution', content: pathway.semester2, color: '#3b82f6' },
-                { label: 'Semester 3: Leadership', content: pathway.semester3, color: '#10b981' },
-              ].map((sem, i) => (
-                <div key={i} style={{ flex: 1, background: 'var(--bg-card)', padding: 16 }}>
-                  <div style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, color: sem.color, marginBottom: 6 }}>{sem.label}</div>
-                  <p style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.6 }}>{sem.content}</p>
+          <div className="grid-2" style={{ gap: 20 }}>
+            {/* Workstreams */}
+            <div>
+              <h4 style={{ fontSize: 13, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 10, letterSpacing: '0.05em' }}>
+                DD Workstreams
+              </h4>
+              {major.workstreams.map((ws) => (
+                <div key={ws} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '6px 0',
+                  fontSize: 14,
+                }}>
+                  <ChevronRight size={14} style={{ color: major.color }} />
+                  <span>{ws}</span>
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: 12, padding: 16, background: 'var(--bg)', borderRadius: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, color: 'var(--cyan)', marginBottom: 6 }}>Post-Graduation Career Paths</div>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {pathway.career.map(c => <span key={c} className="tag tag-cyan">{c}</span>)}
+
+            {/* Tools */}
+            <div>
+              <h4 style={{ fontSize: 13, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 10, letterSpacing: '0.05em' }}>
+                Platform Tools
+              </h4>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {major.tools.map((tool) => (
+                  <span key={tool} className="tag tag-blue" style={{ fontSize: 12 }}>{tool}</span>
+                ))}
               </div>
+
+              <h4 style={{ fontSize: 13, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 10, marginTop: 20, letterSpacing: '0.05em' }}>
+                Recommended Tracks
+              </h4>
+              {major.tracks.map((track) => (
+                <a
+                  key={track}
+                  href="/students"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    padding: '6px 0',
+                    fontSize: 14,
+                    color: major.color,
+                    textDecoration: 'none',
+                  }}
+                >
+                  <Briefcase size={14} />
+                  <span>{track}</span>
+                </a>
+              ))}
             </div>
           </div>
-        </>
-      )}
 
-      {/* Skills Matrix */}
+          {/* Skills */}
+          <div style={{ marginTop: 20 }}>
+            <h4 style={{ fontSize: 13, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 10, letterSpacing: '0.05em' }}>
+              Skills You Will Develop
+            </h4>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {major.skills.map((skill) => (
+                <span
+                  key={skill}
+                  style={{
+                    padding: '5px 12px',
+                    borderRadius: 20,
+                    fontSize: 13,
+                    fontWeight: 500,
+                    background: `${major.color}20`,
+                    color: major.color,
+                    border: `1px solid ${major.color}40`,
+                  }}
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 2: Learning Pathway Visualization */}
       <div className="card" style={{ marginBottom: 24 }}>
-        <h3>Skills Development Matrix</h3>
-        <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 16 }}>Skills you'll develop through DD work, their employer demand, and which workstreams develop them.</p>
-        <div className="table-wrapper">
-          <table>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+          <BookOpen size={20} style={{ color: 'var(--accent)' }} />
+          <h2 style={{ margin: 0 }}>Learning Pathway</h2>
+        </div>
+        <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 24 }}>
+          Your journey from student to Digital District contributor and beyond.
+        </p>
+
+        <div style={{ position: 'relative' }}>
+          {/* Timeline line */}
+          <div style={{
+            position: 'absolute',
+            left: 24,
+            top: 40,
+            bottom: 40,
+            width: 2,
+            background: 'var(--border)',
+          }} />
+
+          {pathwaySteps.map((step, idx) => {
+            const Icon = step.icon;
+            return (
+              <div
+                key={step.semester}
+                style={{
+                  display: 'flex',
+                  gap: 20,
+                  marginBottom: idx < pathwaySteps.length - 1 ? 32 : 0,
+                  position: 'relative',
+                }}
+              >
+                <div style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: '50%',
+                  background: `${step.color}20`,
+                  border: `2px solid ${step.color}`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  zIndex: 1,
+                }}>
+                  <Icon size={20} style={{ color: step.color }} />
+                </div>
+                <div style={{ paddingTop: 4 }}>
+                  <span style={{
+                    fontSize: 11,
+                    textTransform: 'uppercase',
+                    fontWeight: 700,
+                    letterSpacing: '0.08em',
+                    color: step.color,
+                  }}>
+                    {step.semester}
+                  </span>
+                  <h4 style={{ margin: '4px 0 6px', fontSize: 16 }}>{step.title}</h4>
+                  <p style={{ margin: 0, fontSize: 14, color: 'var(--text-muted)', maxWidth: 600 }}>
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Section 3: Skills Development Matrix */}
+      <div className="card" style={{ marginBottom: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+          <Star size={20} style={{ color: 'var(--accent)' }} />
+          <h2 style={{ margin: 0 }}>Skills Development Matrix</h2>
+        </div>
+        <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 16 }}>
+          Key skills developed through DD participation. Skills marked with a star are most in-demand by employers.
+        </p>
+
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{
+            width: '100%',
+            borderCollapse: 'collapse',
+            fontSize: 14,
+          }}>
             <thead>
-              <tr>
-                <th>Skill</th>
-                <th>Employer Demand</th>
-                <th>Developed In</th>
+              <tr style={{ borderBottom: '2px solid var(--border)' }}>
+                <th style={{ textAlign: 'left', padding: '10px 12px', fontSize: 12, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
+                  Skill
+                </th>
+                <th style={{ textAlign: 'left', padding: '10px 12px', fontSize: 12, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
+                  DD Workstreams
+                </th>
+                <th style={{ textAlign: 'center', padding: '10px 12px', fontSize: 12, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
+                  Employer Demand
+                </th>
               </tr>
             </thead>
             <tbody>
-              {skillsMatrix.map(s => (
-                <tr key={s.skill}>
-                  <td style={{ fontWeight: 600 }}>{s.skill}</td>
-                  <td>
-                    <span className={`tag ${s.demand === 'Very High' ? 'tag-green' : s.demand === 'High' ? 'tag-blue' : 'tag-yellow'}`}>
-                      {s.demand}
-                    </span>
+              {skillsMatrix.map((row) => (
+                <tr key={row.skill} style={{ borderBottom: '1px solid var(--border)' }}>
+                  <td style={{
+                    padding: '10px 12px',
+                    fontWeight: 600,
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {row.skill}
                   </td>
-                  <td>
-                    <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                      {s.workstreams.map(w => <span key={w} className="tag tag-purple" style={{ fontSize: 10 }}>{w}</span>)}
+                  <td style={{ padding: '10px 12px' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                      {row.workstreams.map((ws) => (
+                        <span key={ws} className="tag tag-purple" style={{ fontSize: 11 }}>{ws}</span>
+                      ))}
                     </div>
+                  </td>
+                  <td style={{ padding: '10px 12px', textAlign: 'center' }}>
+                    {row.inDemand ? (
+                      <span style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 4,
+                        padding: '3px 10px',
+                        borderRadius: 20,
+                        fontSize: 12,
+                        fontWeight: 600,
+                        background: 'rgba(16, 185, 129, 0.15)',
+                        color: 'var(--success)',
+                      }}>
+                        <Star size={12} fill="currentColor" /> High Demand
+                      </span>
+                    ) : (
+                      <span style={{
+                        padding: '3px 10px',
+                        borderRadius: 20,
+                        fontSize: 12,
+                        color: 'var(--text-muted)',
+                        background: 'var(--bg)',
+                      }}>
+                        Growing
+                      </span>
+                    )}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+
+        {/* Progress bar summary */}
+        <div style={{ marginTop: 20, padding: '16px 0 0', borderTop: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 6 }}>
+            <span style={{ color: 'var(--text-muted)' }}>High-demand skills coverage</span>
+            <span style={{ fontWeight: 600, color: 'var(--success)' }}>
+              {skillsMatrix.filter(s => s.inDemand).length} of {skillsMatrix.length} skills
+            </span>
+          </div>
+          <div style={{
+            height: 8,
+            borderRadius: 4,
+            background: 'var(--bg)',
+            overflow: 'hidden',
+          }}>
+            <div style={{
+              width: `${(skillsMatrix.filter(s => s.inDemand).length / skillsMatrix.length) * 100}%`,
+              height: '100%',
+              borderRadius: 4,
+              background: 'linear-gradient(90deg, #10b981, #3b82f6)',
+            }} />
+          </div>
+        </div>
       </div>
 
-      {/* Credit & Recognition */}
-      <div className="card">
-        <h3>Credit & Recognition</h3>
-        <div className="grid-2">
-          <div>
-            <div style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text-muted)', marginBottom: 8 }}>Academic Credit Options</div>
-            <ul style={{ fontSize: 13, paddingLeft: 16, lineHeight: 2 }}>
-              <li><strong>Independent Study</strong> — 1-3 credits, flexible schedule</li>
-              <li><strong>Capstone/Thesis</strong> — 3-6 credits, major deliverable</li>
-              <li><strong>Service Learning</strong> — 1-3 credits, community focus</li>
-              <li><strong>Research Assistantship</strong> — Stipend + tuition, graduate students</li>
-              <li><strong>Practicum/Internship</strong> — 3-6 credits, paid position</li>
+      {/* Section 4: Credit & Recognition */}
+      <div className="card" style={{ marginBottom: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+          <Award size={20} style={{ color: 'var(--accent)' }} />
+          <h2 style={{ margin: 0 }}>Credit & Recognition</h2>
+        </div>
+        <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 24 }}>
+          DD participation counts. Here is how your work translates to academic credit, career assets, and employment opportunities.
+        </p>
+
+        <div className="grid-2" style={{ marginBottom: 24 }}>
+          {creditPaths.map((path) => {
+            const Icon = path.icon;
+            return (
+              <div
+                key={path.title}
+                style={{
+                  padding: 20,
+                  borderRadius: 10,
+                  border: '1px solid var(--border)',
+                  background: 'var(--bg)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                  <div style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 8,
+                    background: 'rgba(59, 130, 246, 0.12)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                    <Icon size={18} style={{ color: 'var(--accent)' }} />
+                  </div>
+                  <h4 style={{ margin: 0, fontSize: 15 }}>{path.title}</h4>
+                </div>
+                <p style={{ margin: 0, fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                  {path.description}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Portfolio, Letters, Employment */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr 1fr',
+          gap: 16,
+        }}>
+          <div style={{
+            padding: 20,
+            borderRadius: 10,
+            border: '1px solid var(--border)',
+            background: 'var(--bg)',
+          }}>
+            <h4 style={{ fontSize: 14, marginBottom: 8, color: '#3b82f6' }}>Portfolio Value</h4>
+            <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.8 }}>
+              <li>Production-grade code contributions</li>
+              <li>Published dashboards and data work</li>
+              <li>Community impact documentation</li>
+              <li>Cross-functional team experience</li>
             </ul>
           </div>
-          <div>
-            <div style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, color: 'var(--text-muted)', marginBottom: 8 }}>What Goes on Your Resume</div>
-            <ul style={{ fontSize: 13, paddingLeft: 16, lineHeight: 2 }}>
-              <li>Real deployed infrastructure (not class projects)</li>
-              <li>Published research, policy briefs, and data journalism</li>
-              <li>Open-source code contributions with your name on them</li>
-              <li>Community engagement with measurable outcomes</li>
-              <li>Letters of recommendation from city leaders</li>
-              <li>Direct employment pipeline at DD Authority or partners</li>
+          <div style={{
+            padding: 20,
+            borderRadius: 10,
+            border: '1px solid var(--border)',
+            background: 'var(--bg)',
+          }}>
+            <h4 style={{ fontSize: 14, marginBottom: 8, color: '#8b5cf6' }}>Letters of Recommendation</h4>
+            <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.8 }}>
+              <li>Faculty advisor endorsement</li>
+              <li>City official reference letters</li>
+              <li>Community partner testimonials</li>
+              <li>Peer leadership evaluations</li>
+            </ul>
+          </div>
+          <div style={{
+            padding: 20,
+            borderRadius: 10,
+            border: '1px solid var(--border)',
+            background: 'var(--bg)',
+          }}>
+            <h4 style={{ fontSize: 14, marginBottom: 8, color: '#10b981' }}>Employment Pipeline</h4>
+            <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.8 }}>
+              <li>DD operations full-time roles</li>
+              <li>Civic tech startup opportunities</li>
+              <li>Municipal government positions</li>
+              <li>Consulting and advisory roles</li>
             </ul>
           </div>
         </div>

@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import {
+  Play, CalendarDays, UserCheck, Megaphone, Presentation,
   ClipboardCheck, BarChart3, MapPin, ListChecks,
-  MessageSquare, FileText, Users, Globe, BookOpen
+  MessageSquare, FileText, Users, Globe, BookOpen,
+  ArrowRight
 } from 'lucide-react';
 
 export default function Landing() {
@@ -10,75 +12,135 @@ export default function Landing() {
       <div className="hero">
         <h1>Digital District Operating System</h1>
         <p>
-          The complete platform for transitioning from legacy Innovation Districts
-          to AI-powered, cloud-native Digital Districts.
+          Your step-by-step assistant for building a Digital District — from first meeting
+          to citywide launch. Every workflow, timeline, presentation, and stakeholder
+          conversation, guided and coordinated.
         </p>
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-          <Link to="/scorecard" className="btn btn-primary">Start Assessment</Link>
-          <Link to="/dashboard" className="btn btn-secondary">View Dashboard</Link>
+          <Link to="/workflow" className="btn btn-primary"><Play size={16} /> Start Workflow</Link>
+          <Link to="/scorecard" className="btn btn-secondary">Assess Readiness</Link>
         </div>
       </div>
 
       <div style={{ maxWidth: 900, margin: '0 auto' }}>
-        {/* Tier 1 */}
+        {/* How it works */}
+        <div className="card" style={{ marginBottom: 32, textAlign: 'center' }}>
+          <h2 style={{ marginBottom: 16 }}>How This Platform Works</h2>
+          <div className="grid-3">
+            <div style={{ padding: 12 }}>
+              <div style={{ fontSize: 32, fontWeight: 700, color: 'var(--accent-light)' }}>1</div>
+              <p style={{ fontWeight: 600, marginTop: 4 }}>Follow the Workflow</p>
+              <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>
+                Step-by-step guidance from building the case through citywide deployment. Each step has tasks, meetings, and deliverables.
+              </p>
+            </div>
+            <div style={{ padding: 12 }}>
+              <div style={{ fontSize: 32, fontWeight: 700, color: 'var(--purple)' }}>2</div>
+              <p style={{ fontWeight: 600, marginTop: 4 }}>Coordinate Your Team</p>
+              <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>
+                Gantt timelines, stakeholder tracking, meeting agendas, and PR calendars keep everyone aligned.
+              </p>
+            </div>
+            <div style={{ padding: 12 }}>
+              <div style={{ fontSize: 32, fontWeight: 700, color: 'var(--success)' }}>3</div>
+              <p style={{ fontWeight: 600, marginTop: 4 }}>Generate & Present</p>
+              <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>
+                Stakeholder pitches, council briefings, investor decks, press materials, and city proposals — all customized and ready.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Workflow Assistant - PRIMARY */}
         <div className="tier-section">
-          <span className="page-badge badge-tier1">Tier 1</span>
-          <h2>Interactive Tools</h2>
-          <p className="tier-desc">Assess, plan, and track your Digital District deployment.</p>
+          <span className="page-badge" style={{ background: 'rgba(16, 185, 129, 0.15)', color: 'var(--success)' }}>Start Here</span>
+          <h2>Workflow Assistant</h2>
+          <p className="tier-desc">Your guided path from idea to operational Digital District. Tasks, meetings, presentations, and PR — all sequenced.</p>
+          <div className="grid-2">
+            <Link to="/workflow" className="feature-card" style={{ borderColor: 'var(--success)', borderWidth: 2 }}>
+              <h3><Play size={18} /> Guided Workflow <ArrowRight size={14} /></h3>
+              <p>Step-by-step walkthrough of every phase. Complete tasks, prep for meetings, generate deliverables — in order.</p>
+            </Link>
+            <Link to="/timeline" className="feature-card">
+              <h3><CalendarDays size={18} /> Timeline & Tasks</h3>
+              <p>Gantt-style timeline showing all tasks, meetings, and milestones with owners and dependencies.</p>
+            </Link>
+            <Link to="/stakeholders" className="feature-card">
+              <h3><UserCheck size={18} /> Stakeholder Tracker</h3>
+              <p>Track every stakeholder: influence, interest, engagement status, and next actions. Quadrant analysis built in.</p>
+            </Link>
+            <Link to="/communications" className="feature-card">
+              <h3><Megaphone size={18} /> PR & Comms Calendar</h3>
+              <p>Sequenced communications plan: internal briefings, media outreach, community updates, and social media.</p>
+            </Link>
+          </div>
+          <div style={{ marginTop: 12 }}>
+            <Link to="/presentations" className="feature-card">
+              <h3><Presentation size={18} /> Presentation Generator</h3>
+              <p>Slide-ready content with speaker notes for kickoffs, council briefings, community sessions, investor pitches, milestone reports, and media briefings.</p>
+            </Link>
+          </div>
+        </div>
+
+        {/* Assess & Plan */}
+        <div className="tier-section">
+          <span className="page-badge badge-tier1">Assess & Plan</span>
+          <h2>Diagnostic & Planning Tools</h2>
+          <p className="tier-desc">Assess readiness, select corridors, track KPIs, and monitor implementation.</p>
           <div className="grid-2">
             <Link to="/scorecard" className="feature-card">
               <h3><ClipboardCheck size={18} /> Readiness Scorecard</h3>
-              <p>8-dimension diagnostic to assess your city's readiness for a Digital District.</p>
+              <p>8-dimension diagnostic with radar charts and bottleneck analysis.</p>
             </Link>
             <Link to="/dashboard" className="feature-card">
               <h3><BarChart3 size={18} /> Leadership Dashboard</h3>
-              <p>KPI visualizations for the Economic Inclusion Index and all core metrics.</p>
+              <p>Economic Inclusion Index, business formation, equity metrics — executive, operational, and community views.</p>
             </Link>
             <Link to="/corridor" className="feature-card">
               <h3><MapPin size={18} /> Corridor Selector</h3>
-              <p>7-factor weighted scoring to choose the right corridor for deployment.</p>
+              <p>7-factor weighted scoring to choose the right corridor.</p>
             </Link>
             <Link to="/tracker" className="feature-card">
               <h3><ListChecks size={18} /> Implementation Tracker</h3>
-              <p>Phase-by-phase checklist from Street to System through Citywide deployment.</p>
+              <p>Phase 1-4 exit criteria checklists with workstream details.</p>
             </Link>
           </div>
         </div>
 
-        {/* Tier 2 */}
+        {/* Communicate */}
         <div className="tier-section">
-          <span className="page-badge badge-tier2">Tier 2</span>
+          <span className="page-badge badge-tier2">Communicate</span>
           <h2>Communication Engine</h2>
-          <p className="tier-desc">Generate stakeholder messaging, proposals, and public dashboards.</p>
+          <p className="tier-desc">Generate stakeholder messaging, full proposals, and public dashboards.</p>
           <div className="grid-3">
             <Link to="/messaging" className="feature-card">
               <h3><MessageSquare size={18} /> Messaging Generator</h3>
-              <p>Customized elevator pitches for 15+ audience types.</p>
+              <p>Customized pitches for 15+ audience types.</p>
             </Link>
             <Link to="/proposal" className="feature-card">
               <h3><FileText size={18} /> Proposal Builder</h3>
-              <p>Generate city-specific Digital District proposals.</p>
+              <p>Full city proposals with budget and equity commitments.</p>
             </Link>
             <Link to="/community" className="feature-card">
               <h3><Users size={18} /> Community Dashboard</h3>
-              <p>Public-facing impact metrics with equity breakdowns.</p>
+              <p>Public-facing impact metrics and business spotlights.</p>
             </Link>
           </div>
         </div>
 
-        {/* Tier 3 */}
+        {/* Scale */}
         <div className="tier-section">
-          <span className="page-badge badge-tier3">Tier 3</span>
+          <span className="page-badge badge-tier3">Scale</span>
           <h2>Multi-City Network</h2>
-          <p className="tier-desc">Connect districts, share learnings, and scale nationwide.</p>
+          <p className="tier-desc">Connect districts, share learnings, and replicate nationwide.</p>
           <div className="grid-2">
             <Link to="/directory" className="feature-card">
               <h3><Globe size={18} /> City Directory</h3>
-              <p>Registry of Digital Districts with interoperability status and metrics.</p>
+              <p>Registry of Digital Districts with DDIS conformance and metrics.</p>
             </Link>
             <Link to="/network" className="feature-card">
-              <h3><BookOpen size={18} /> Peer Learning Network</h3>
-              <p>Cross-city knowledge sharing, case studies, and benchmarking.</p>
+              <h3><BookOpen size={18} /> Peer Network</h3>
+              <p>Cross-city discussions, benchmarks, and replication playbook.</p>
             </Link>
           </div>
         </div>

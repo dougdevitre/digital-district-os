@@ -1,77 +1,189 @@
 import { useState } from 'react';
-import { CheckCircle2, ArrowRight, ArrowLeft, Sparkles } from 'lucide-react';
+import {
+  Sparkles, Users, Rocket, ChevronRight, ChevronLeft, Check,
+  Brain, FileText, Megaphone, Store, Wifi, TrendingUp,
+  BarChart3, Heart, Calendar, UserCheck, ArrowRight, Star,
+  Lightbulb, Zap
+} from 'lucide-react';
 
-const neighborhoods = ['Delmar / The Loop', 'North City', 'Cherokee Street', 'Tower Grove', 'Downtown', 'Central West End', 'Grand Center', 'Bevo Mill', 'Natural Bridge', 'South Grand'];
-const industries = ['Retail/Commerce', 'Food & Beverage', 'Professional Services', 'Creative/Media', 'Tech/SaaS', 'Social Enterprise', 'Healthcare', 'Education', 'Real Estate', 'Manufacturing', 'Other'];
-const stages = ['Just an idea', 'Side project', 'Registered but not launched', 'Already operating', 'Looking to grow'];
-const challenges = ['Don\'t know where to start', 'Need a business plan', 'Need customers', 'Need funding', 'Need legal help', 'Need marketing', 'Need technology help', 'Need mentorship'];
-const hearAbout = ['Community event', 'Social media', 'Friend/family', 'City website', 'News article', 'Other'];
+const NEIGHBORHOODS = [
+  'Delmar / The Loop', 'Downtown', 'North City', 'Tower Grove',
+  'Central West End', 'Cherokee Street', 'Grand Center',
+  'Bevo Mill', 'Natural Bridge', 'South Grand'
+];
 
-function getRecommendedTools(stage: string, selectedChallenges: string[]) {
-  const tools: { name: string; desc: string; icon: string }[] = [];
-  if (stage === 'Just an idea' || selectedChallenges.includes('Don\'t know where to start') || selectedChallenges.includes('Need a business plan')) {
-    tools.push({ name: 'AI Business Planner', desc: 'Turn your idea into a structured plan with financial projections', icon: '1' });
-  }
-  if (selectedChallenges.includes('Need legal help') || stage === 'Just an idea' || stage === 'Side project') {
-    tools.push({ name: 'Legal Document Generator', desc: 'LLC filing, contracts, privacy policies — generated in minutes', icon: '2' });
-  }
-  if (selectedChallenges.includes('Need marketing') || selectedChallenges.includes('Need customers')) {
-    tools.push({ name: 'AI Marketing Assistant', desc: 'Social posts, email campaigns, and ad copy tailored to your audience', icon: '3' });
-  }
-  if (stage === 'Already operating' || stage === 'Looking to grow') {
-    tools.push({ name: 'Growth Dashboard', desc: 'Track revenue, customers, and trends with AI-powered insights', icon: '4' });
-  }
-  if (selectedChallenges.includes('Need funding')) {
-    tools.push({ name: 'Grant & Funding Finder', desc: 'AI matches you with grants, loans, and investors for your business type', icon: '5' });
-  }
-  if (selectedChallenges.includes('Need mentorship')) {
-    tools.push({ name: 'Mentor Match', desc: 'Get paired with an experienced mentor in your industry', icon: '6' });
-  }
-  if (tools.length < 4) {
-    tools.push({ name: 'Marketplace Listing', desc: 'Get your business visible to customers across the city', icon: '7' });
-  }
-  return tools.slice(0, 6);
+const HEAR_OPTIONS = [
+  'Community event', 'Social media', 'Friend/family',
+  'City website', 'News article', 'Other'
+];
+
+const STAGES = [
+  'Just an idea',
+  'Side project',
+  'Registered but not launched',
+  'Already operating',
+  'Looking to grow'
+];
+
+const INDUSTRIES = [
+  'Retail/Commerce', 'Food & Beverage', 'Professional Services',
+  'Creative/Media', 'Tech/SaaS', 'Social Enterprise',
+  'Healthcare', 'Education', 'Real Estate', 'Manufacturing', 'Other'
+];
+
+const CHALLENGES = [
+  "Don't know where to start",
+  'Need a business plan',
+  'Need customers',
+  'Need funding',
+  'Need legal help',
+  'Need marketing',
+  'Need technology help',
+  'Need mentorship'
+];
+
+const STEP_LABELS = [
+  'Welcome', 'About You', 'Assessment', 'Your Plan',
+  'Tool Access', 'Connect', 'Launch'
+];
+
+function generateDDID() {
+  const num = Math.floor(1000 + Math.random() * 9000);
+  return `DD-2026-${num}`;
 }
 
-function getTimeline(stage: string) {
-  if (stage === 'Just an idea') return '2-4 weeks';
-  if (stage === 'Side project') return '1-2 weeks';
-  if (stage === 'Registered but not launched') return '3-7 days';
-  if (stage === 'Already operating') return '1-3 days';
-  return '1-3 days';
+interface FormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  neighborhood: string;
+  hearAbout: string;
+  businessIdea: string;
+  stage: string;
+  industry: string;
+  challenges: string[];
 }
 
 export default function OnboardingWizard() {
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState({
+  const [ddid] = useState(generateDDID);
+  const [toolsActivated, setToolsActivated] = useState<boolean[]>([false, false, false, false, false, false]);
+  const [form, setForm] = useState<FormData>({
     firstName: '', lastName: '', email: '', phone: '',
     neighborhood: '', hearAbout: '',
-    idea: '', stage: '', industry: '', challenges: [] as string[],
+    businessIdea: '', stage: '', industry: '', challenges: []
   });
 
-  const ddId = `DD-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-  const tools = getRecommendedTools(form.stage, form.challenges);
-  const timeline = getTimeline(form.stage);
+  const totalSteps = 7;
+  const progress = ((step + 1) / totalSteps) * 100;
 
-  const activatedTools = [
-    'Digital Identity', 'AI Business Planner', 'Document Generator',
-    'Marketing Assistant', 'Community Wi-Fi Access', 'Marketplace Listing',
-  ];
-
-  const mentors = [
-    { name: 'Marcus Johnson', industry: 'Tech/SaaS', rating: 4.9 },
-    { name: 'Maria Santos', industry: 'Retail/Commerce', rating: 4.9 },
-    { name: 'Dr. Fatima Al-Rashid', industry: 'Professional Services', rating: 4.8 },
-  ];
+  const updateForm = (field: keyof FormData, value: string | string[]) => {
+    setForm(prev => ({ ...prev, [field]: value }));
+  };
 
   const toggleChallenge = (c: string) => {
-    setForm(f => ({
-      ...f,
-      challenges: f.challenges.includes(c) ? f.challenges.filter(x => x !== c) : [...f.challenges, c],
+    setForm(prev => ({
+      ...prev,
+      challenges: prev.challenges.includes(c)
+        ? prev.challenges.filter(x => x !== c)
+        : [...prev.challenges, c]
     }));
   };
 
-  const stepTitles = ['Welcome', 'About You', 'Your Business', 'Your Plan', 'Tool Access', 'Connect', 'Launch'];
+  const simulateActivation = () => {
+    setToolsActivated([false, false, false, false, false, false]);
+    [0, 1, 2, 3, 4, 5].forEach(i => {
+      setTimeout(() => {
+        setToolsActivated(prev => {
+          const copy = [...prev];
+          copy[i] = true;
+          return copy;
+        });
+      }, 400 * (i + 1));
+    });
+  };
+
+  const next = () => {
+    if (step < totalSteps - 1) {
+      const nextStep = step + 1;
+      setStep(nextStep);
+      if (nextStep === 4) simulateActivation();
+    }
+  };
+
+  const back = () => {
+    if (step > 0) setStep(step - 1);
+  };
+
+  const getRecommendedTools = () => {
+    if (form.stage === 'Just an idea') {
+      return [
+        { icon: <Brain size={24} />, name: 'AI Business Planner', desc: 'Turn your idea into a structured business plan with AI guidance.' },
+        { icon: <FileText size={24} />, name: 'Legal Document Generator', desc: 'Create LLC filings, contracts, and compliance docs instantly.' },
+        { icon: <Megaphone size={24} />, name: 'Marketing Assistant', desc: 'Build your brand, create social posts, and find your first customers.' },
+        { icon: <Store size={24} />, name: 'Marketplace Listing', desc: 'Get listed in the Digital District directory from day one.' },
+      ];
+    }
+    if (form.stage === 'Already operating' || form.stage === 'Looking to grow') {
+      return [
+        { icon: <TrendingUp size={24} />, name: 'Growth Dashboard', desc: 'Track revenue, customers, and growth metrics in one place.' },
+        { icon: <Megaphone size={24} />, name: 'AI Marketing Suite', desc: 'Automate campaigns, SEO, and social media at scale.' },
+        { icon: <UserCheck size={24} />, name: 'Mentor Match', desc: 'Get paired with experienced mentors in your industry.' },
+        { icon: <BarChart3 size={24} />, name: 'Financial Tools', desc: 'Cash flow forecasting, invoicing, and bookkeeping assistance.' },
+        { icon: <Store size={24} />, name: 'Marketplace Boost', desc: 'Premium placement and promotional tools in the directory.' },
+      ];
+    }
+    return [
+      { icon: <Brain size={24} />, name: 'AI Business Planner', desc: 'Refine your plan with AI-powered market analysis.' },
+      { icon: <FileText size={24} />, name: 'Legal Document Generator', desc: 'Handle registration, contracts, and compliance docs.' },
+      { icon: <Megaphone size={24} />, name: 'Marketing Assistant', desc: 'Build awareness and attract your first customers.' },
+      { icon: <UserCheck size={24} />, name: 'Mentor Match', desc: 'Connect with someone who has been where you are.' },
+      { icon: <Store size={24} />, name: 'Marketplace Listing', desc: 'Get discovered by customers across the Digital District.' },
+      { icon: <Wifi size={24} />, name: 'Community Wi-Fi', desc: 'Free high-speed internet at all District locations.' },
+    ];
+  };
+
+  const getEstimatedDays = () => {
+    if (form.stage === 'Just an idea') return 14;
+    if (form.stage === 'Side project') return 10;
+    if (form.stage === 'Registered but not launched') return 5;
+    if (form.stage === 'Already operating') return 3;
+    return 7;
+  };
+
+  const getMentors = () => {
+    const all = [
+      { name: 'Patricia Williams', specialty: 'Business Strategy & Finance', industry: 'Professional Services', avatar: 'PW' },
+      { name: 'David Chen', specialty: 'Tech & Product Development', industry: 'Tech/SaaS', avatar: 'DC' },
+      { name: 'Maria Gonzalez', specialty: 'Food & Retail Operations', industry: 'Food & Beverage', avatar: 'MG' },
+      { name: 'James Washington', specialty: 'Creative Industries & Media', industry: 'Creative/Media', avatar: 'JW' },
+      { name: 'Sandra Okafor', specialty: 'Healthcare & Social Enterprise', industry: 'Healthcare', avatar: 'SO' },
+    ];
+    const matched = all.filter(m => m.industry === form.industry);
+    if (matched.length >= 2) return matched.slice(0, 3);
+    return [matched[0] || all[0], all[1], all[2]];
+  };
+
+  const communityGroups = [
+    { name: `${form.neighborhood || 'Delmar / The Loop'} Entrepreneurs`, members: 84, desc: 'Connect with business owners in your neighborhood.' },
+    { name: 'New Business Owners', members: 312, desc: 'A supportive group for those just getting started.' },
+    { name: `${form.industry || 'General'} Network`, members: 156, desc: 'Industry-specific discussions and resource sharing.' },
+  ];
+
+  const upcomingEvents = [
+    { name: 'Community Workshop: AI Tools for Business', date: 'April 12, 2026', time: '10:00 AM', location: 'Delmar Innovation Hub' },
+    { name: 'Entrepreneur Meetup & Networking', date: 'April 18, 2026', time: '6:00 PM', location: 'Grand Center Co-Work Space' },
+  ];
+
+  const toolChecklist = [
+    { name: 'Digital Identity', desc: 'Auto-created' },
+    { name: 'AI Business Planner', desc: 'Ready' },
+    { name: 'Document Generator', desc: 'Ready' },
+    { name: 'Marketing Assistant', desc: 'Ready' },
+    { name: 'Community Wi-Fi Access', desc: 'Ready' },
+    { name: 'Marketplace Directory Listing', desc: 'Ready' },
+  ];
 
   return (
     <div>
@@ -81,245 +193,552 @@ export default function OnboardingWizard() {
         <p>From idea to launched business in hours, not months. This wizard walks you through every step.</p>
       </div>
 
-      {/* Step Indicators */}
-      <div style={{ display: 'flex', gap: 4, marginBottom: 32 }}>
-        {stepTitles.map((title, i) => (
-          <div key={i} style={{ flex: 1, textAlign: 'center' }}>
-            <div style={{
-              width: 32, height: 32, borderRadius: '50%', margin: '0 auto 4px',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 13, fontWeight: 700,
-              background: i < step ? 'var(--success)' : i === step ? 'var(--accent)' : 'var(--border)',
-              color: i <= step ? '#fff' : 'var(--text-muted)',
-              transition: 'all 0.2s',
-            }}>
-              {i < step ? <CheckCircle2 size={16} /> : i + 1}
+      {/* Step indicators */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+        {STEP_LABELS.map((label, i) => (
+          <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div
+              onClick={() => { if (i < step) setStep(i); }}
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 13,
+                fontWeight: 700,
+                cursor: i < step ? 'pointer' : 'default',
+                background: i < step ? 'var(--success)' : i === step ? 'var(--accent)' : 'var(--bg-card)',
+                color: i <= step ? 'white' : 'var(--text-muted)',
+                border: i <= step ? 'none' : '1px solid var(--border)',
+                transition: 'all 0.3s ease',
+                flexShrink: 0,
+              }}
+            >
+              {i < step ? <Check size={16} /> : i + 1}
             </div>
-            <div style={{ fontSize: 10, color: i === step ? 'var(--accent-light)' : 'var(--text-muted)' }}>{title}</div>
+            <span style={{
+              fontSize: 12,
+              color: i === step ? 'var(--text)' : 'var(--text-muted)',
+              fontWeight: i === step ? 600 : 400,
+              display: i <= step ? 'inline' : 'none',
+              whiteSpace: 'nowrap',
+            }}>
+              {label}
+            </span>
+            {i < STEP_LABELS.length - 1 && (
+              <div style={{
+                width: 24,
+                height: 2,
+                background: i < step ? 'var(--success)' : 'var(--border)',
+                borderRadius: 1,
+                transition: 'background 0.3s',
+              }} />
+            )}
           </div>
         ))}
       </div>
 
-      {/* Step 0: Welcome */}
+      {/* Progress bar */}
+      <div className="progress-bar" style={{ marginBottom: 32, height: 6 }}>
+        <div className="progress-fill" style={{ width: `${progress}%`, background: 'var(--accent-light)' }} />
+      </div>
+
+      {/* ── Step 0: Welcome ── */}
       {step === 0 && (
-        <div className="card" style={{ textAlign: 'center', padding: 48 }}>
-          <Sparkles size={48} color="var(--accent-light)" style={{ marginBottom: 16 }} />
-          <h2 style={{ marginBottom: 12, fontSize: 28 }}>Welcome to the Digital District</h2>
-          <p style={{ color: 'var(--text-muted)', maxWidth: 500, margin: '0 auto 32px', fontSize: 16 }}>
-            Free AI tools, community Wi-Fi, mentorship, and a marketplace — from any neighborhood.
-          </p>
-          <div className="grid-3" style={{ maxWidth: 700, margin: '0 auto 32px' }}>
-            {[
-              { label: 'Free AI Tools', desc: 'Business planning, marketing, legal docs' },
-              { label: 'Community Network', desc: 'Mentors, peers, events, support' },
-              { label: 'Instant Launch', desc: 'Register to revenue in days, not months' },
-            ].map((v, i) => (
-              <div key={i} style={{ padding: 16, background: 'var(--bg)', borderRadius: 'var(--radius)' }}>
-                <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 4 }}>{v.label}</div>
-                <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>{v.desc}</div>
-              </div>
-            ))}
+        <div>
+          <div className="card" style={{ textAlign: 'center', padding: '48px 32px' }}>
+            <Sparkles size={48} style={{ color: 'var(--accent-light)', marginBottom: 16 }} />
+            <h2 style={{ fontSize: 26, marginBottom: 16 }}>Welcome to the Digital District</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: 16, maxWidth: 600, margin: '0 auto 32px', lineHeight: 1.7 }}>
+              The Digital District gives you free access to AI business tools, community Wi-Fi,
+              mentorship, and a marketplace — from any neighborhood.
+            </p>
+          </div>
+
+          <div className="grid-3" style={{ marginBottom: 32 }}>
+            <div className="card" style={{ textAlign: 'center', padding: 28 }}>
+              <Lightbulb size={32} style={{ color: 'var(--accent-light)', marginBottom: 12 }} />
+              <h3 style={{ marginBottom: 8 }}>Free AI Tools</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: 14, lineHeight: 1.6 }}>
+                Business planning, marketing, legal documents — all powered by AI, all completely free.
+              </p>
+            </div>
+            <div className="card" style={{ textAlign: 'center', padding: 28 }}>
+              <Users size={32} style={{ color: 'var(--purple)', marginBottom: 12 }} />
+              <h3 style={{ marginBottom: 8 }}>Community Network</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: 14, lineHeight: 1.6 }}>
+                Mentors, peers, and events to keep you supported and connected every step of the way.
+              </p>
+            </div>
+            <div className="card" style={{ textAlign: 'center', padding: 28 }}>
+              <Rocket size={32} style={{ color: 'var(--success)', marginBottom: 12 }} />
+              <h3 style={{ marginBottom: 8 }}>Instant Launch</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: 14, lineHeight: 1.6 }}>
+                Go from registered to revenue in days, not months. Everything you need in one place.
+              </p>
+            </div>
+          </div>
+
+          <div style={{ textAlign: 'center' }}>
+            <button className="btn btn-primary" onClick={next} style={{ padding: '14px 36px', fontSize: 16 }}>
+              Get Started <ChevronRight size={18} />
+            </button>
           </div>
         </div>
       )}
 
-      {/* Step 1: About You */}
+      {/* ── Step 1: About You ── */}
       {step === 1 && (
-        <div className="card">
-          <h2 style={{ marginBottom: 16 }}>Tell Us About Yourself</h2>
+        <div className="card" style={{ maxWidth: 640, padding: 32 }}>
+          <h2 style={{ fontSize: 22, marginBottom: 4 }}>Tell Us About Yourself</h2>
+          <p style={{ color: 'var(--text-muted)', marginBottom: 28, fontSize: 14 }}>
+            We will use this to personalize your experience. Nothing is shared without your permission.
+          </p>
+
           <div className="grid-2">
             <div className="form-group">
               <label>First Name</label>
-              <input value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} placeholder="Maria" />
+              <input type="text" value={form.firstName} onChange={e => updateForm('firstName', e.target.value)} placeholder="First name" />
             </div>
             <div className="form-group">
               <label>Last Name</label>
-              <input value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} placeholder="Gonzalez" />
+              <input type="text" value={form.lastName} onChange={e => updateForm('lastName', e.target.value)} placeholder="Last name" />
             </div>
+          </div>
+          <div className="grid-2">
             <div className="form-group">
               <label>Email</label>
-              <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="maria@example.com" />
+              <input type="email" value={form.email} onChange={e => updateForm('email', e.target.value)} placeholder="you@example.com" />
             </div>
             <div className="form-group">
               <label>Phone</label>
-              <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="(314) 555-0123" />
+              <input type="tel" value={form.phone} onChange={e => updateForm('phone', e.target.value)} placeholder="(314) 555-0000" />
             </div>
+          </div>
+          <div className="grid-2">
             <div className="form-group">
-              <label>Neighborhood</label>
-              <select value={form.neighborhood} onChange={e => setForm({ ...form, neighborhood: e.target.value })}>
-                <option value="">Select...</option>
-                {neighborhoods.map(n => <option key={n} value={n}>{n}</option>)}
+              <label>Neighborhood / Ward</label>
+              <select value={form.neighborhood} onChange={e => updateForm('neighborhood', e.target.value)}>
+                <option value="">Select your neighborhood</option>
+                {NEIGHBORHOODS.map(n => <option key={n} value={n}>{n}</option>)}
               </select>
             </div>
             <div className="form-group">
-              <label>How did you hear about us?</label>
-              <select value={form.hearAbout} onChange={e => setForm({ ...form, hearAbout: e.target.value })}>
-                <option value="">Select...</option>
-                {hearAbout.map(h => <option key={h} value={h}>{h}</option>)}
+              <label>How Did You Hear About Us?</label>
+              <select value={form.hearAbout} onChange={e => updateForm('hearAbout', e.target.value)}>
+                <option value="">Select one</option>
+                {HEAR_OPTIONS.map(h => <option key={h} value={h}>{h}</option>)}
               </select>
             </div>
           </div>
         </div>
       )}
 
-      {/* Step 2: Business Assessment */}
+      {/* ── Step 2: Business Assessment ── */}
       {step === 2 && (
-        <div className="card">
-          <h2 style={{ marginBottom: 16 }}>Your Business Idea</h2>
+        <div className="card" style={{ maxWidth: 640, padding: 32 }}>
+          <h2 style={{ fontSize: 22, marginBottom: 4 }}>Business Assessment</h2>
+          <p style={{ color: 'var(--text-muted)', marginBottom: 28, fontSize: 14 }}>
+            Help us understand where you are so we can build you a personalized plan.
+          </p>
+
           <div className="form-group">
-            <label>Describe your business idea</label>
-            <textarea value={form.idea} onChange={e => setForm({ ...form, idea: e.target.value })} placeholder="I want to open a..." style={{ minHeight: 80 }} />
+            <label>Tell Us About Your Business Idea</label>
+            <textarea
+              value={form.businessIdea}
+              onChange={e => updateForm('businessIdea', e.target.value)}
+              placeholder="Describe your business idea or what you are working on..."
+              style={{ minHeight: 100 }}
+            />
           </div>
+
           <div className="form-group">
-            <label>What stage are you at?</label>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {stages.map(s => (
-                <label key={s} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, cursor: 'pointer', padding: '6px 0' }}>
-                  <input type="radio" name="stage" checked={form.stage === s} onChange={() => setForm({ ...form, stage: s })} style={{ accentColor: 'var(--accent)' }} />
+            <label>What Stage Are You At?</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 4 }}>
+              {STAGES.map(s => (
+                <label key={s} style={{
+                  display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
+                  fontSize: 14,
+                  color: form.stage === s ? 'var(--text)' : 'var(--text-muted)',
+                  padding: '8px 12px', borderRadius: 8,
+                  border: `1px solid ${form.stage === s ? 'var(--accent)' : 'var(--border)'}`,
+                  background: form.stage === s ? 'rgba(59, 130, 246, 0.08)' : 'transparent',
+                  transition: 'all 0.15s',
+                }}>
+                  <input
+                    type="radio" name="stage" value={s}
+                    checked={form.stage === s}
+                    onChange={e => updateForm('stage', e.target.value)}
+                    style={{ accentColor: 'var(--accent)' }}
+                  />
                   {s}
                 </label>
               ))}
             </div>
           </div>
+
           <div className="form-group">
-            <label>Industry</label>
-            <select value={form.industry} onChange={e => setForm({ ...form, industry: e.target.value })}>
-              <option value="">Select...</option>
-              {industries.map(i => <option key={i} value={i}>{i}</option>)}
+            <label>What Industry?</label>
+            <select value={form.industry} onChange={e => updateForm('industry', e.target.value)}>
+              <option value="">Select your industry</option>
+              {INDUSTRIES.map(ind => <option key={ind} value={ind}>{ind}</option>)}
             </select>
           </div>
+
           <div className="form-group">
-            <label>What are your biggest challenges? (select all that apply)</label>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-              {challenges.map(c => (
-                <button key={c} className={`btn btn-sm ${form.challenges.includes(c) ? 'btn-primary' : 'btn-secondary'}`} onClick={() => toggleChallenge(c)}>
+            <label>What Are Your Biggest Challenges Right Now?</label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 4 }}>
+              {CHALLENGES.map(c => (
+                <label key={c} style={{
+                  display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
+                  fontSize: 13,
+                  color: form.challenges.includes(c) ? 'var(--text)' : 'var(--text-muted)',
+                  padding: '8px 12px', borderRadius: 8,
+                  border: `1px solid ${form.challenges.includes(c) ? 'var(--accent)' : 'var(--border)'}`,
+                  background: form.challenges.includes(c) ? 'rgba(59, 130, 246, 0.08)' : 'transparent',
+                  transition: 'all 0.15s',
+                }}>
+                  <input
+                    type="checkbox"
+                    checked={form.challenges.includes(c)}
+                    onChange={() => toggleChallenge(c)}
+                    style={{ accentColor: 'var(--accent)' }}
+                  />
                   {c}
-                </button>
+                </label>
               ))}
             </div>
           </div>
         </div>
       )}
 
-      {/* Step 3: Personalized Plan */}
+      {/* ── Step 3: Personalized Plan ── */}
       {step === 3 && (
-        <div className="card">
-          <h2 style={{ marginBottom: 8 }}>Your Personalized Plan</h2>
-          <p style={{ color: 'var(--text-muted)', marginBottom: 20 }}>
-            Based on your answers, here's your recommended toolkit and timeline.
-          </p>
-          <div className="card" style={{ background: 'var(--bg)', borderColor: 'var(--accent)', marginBottom: 16, textAlign: 'center' }}>
-            <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Estimated time to operational</div>
-            <div style={{ fontSize: 36, fontWeight: 800, color: 'var(--accent-light)' }}>{timeline}</div>
+        <div>
+          <div className="card" style={{ padding: 32, marginBottom: 20, borderLeft: '3px solid var(--accent-light)' }}>
+            <h2 style={{ fontSize: 22, marginBottom: 4 }}>Your Personalized Plan</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: 14, marginBottom: 8 }}>
+              Based on your answers, here is what we recommend to get you moving.
+            </p>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '8px 16px', borderRadius: 20,
+              background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)',
+              fontSize: 14, fontWeight: 600, marginTop: 4,
+            }}>
+              <Zap size={16} /> Based on your answers, you could be operational in {getEstimatedDays()} days
+            </div>
           </div>
-          <div className="grid-3">
-            {tools.map((tool, i) => (
-              <div key={i} style={{ padding: 16, background: 'var(--bg)', borderRadius: 'var(--radius)', border: '1px solid var(--border)' }}>
-                <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 14, marginBottom: 8 }}>{tool.icon}</div>
-                <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 4 }}>{tool.name}</div>
-                <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{tool.desc}</div>
+
+          <div className="grid-2" style={{ marginBottom: 20 }}>
+            {getRecommendedTools().map((tool, i) => (
+              <div key={i} className="card" style={{ display: 'flex', gap: 16, padding: 20, alignItems: 'flex-start' }}>
+                <div style={{
+                  width: 48, height: 48, borderRadius: 12,
+                  background: 'rgba(59, 130, 246, 0.1)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'var(--accent-light)', flexShrink: 0,
+                }}>
+                  {tool.icon}
+                </div>
+                <div>
+                  <h3 style={{ fontSize: 15, marginBottom: 4 }}>{tool.name}</h3>
+                  <p style={{ color: 'var(--text-muted)', fontSize: 13, lineHeight: 1.5 }}>{tool.desc}</p>
+                </div>
               </div>
             ))}
           </div>
-        </div>
-      )}
 
-      {/* Step 4: Tool Access */}
-      {step === 4 && (
-        <div className="card">
-          <h2 style={{ marginBottom: 16 }}>Activating Your Tools</h2>
-          <div style={{ background: 'var(--bg)', borderRadius: 'var(--radius)', padding: 16, marginBottom: 20, textAlign: 'center' }}>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Your Digital District ID</div>
-            <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--accent-light)', letterSpacing: 2 }}>{ddId}</div>
-          </div>
-          {activatedTools.map((tool, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 0', borderBottom: i < activatedTools.length - 1 ? '1px solid var(--border)' : 'none' }}>
-              <CheckCircle2 size={20} color="var(--success)" />
-              <span style={{ fontSize: 15, fontWeight: 500 }}>{tool}</span>
-              <span className="tag tag-green" style={{ marginLeft: 'auto' }}>Activated</span>
+          <div className="card" style={{ padding: 20 }}>
+            <h3 style={{ fontSize: 14, marginBottom: 12 }}>Your Recommended Path</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              {getRecommendedTools().map((tool, i, arr) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span className="tag tag-blue">{tool.name}</span>
+                  {i < arr.length - 1 && <ArrowRight size={14} style={{ color: 'var(--text-muted)' }} />}
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       )}
 
-      {/* Step 5: Connect */}
+      {/* ── Step 4: Tool Access ── */}
+      {step === 4 && (
+        <div className="card" style={{ maxWidth: 540, padding: 32 }}>
+          <h2 style={{ fontSize: 22, marginBottom: 4 }}>Activating Your Tools</h2>
+          <p style={{ color: 'var(--text-muted)', marginBottom: 24, fontSize: 14 }}>
+            We are setting everything up for you. This only takes a moment.
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 28 }}>
+            {toolChecklist.map((tool, i) => (
+              <div key={i} style={{
+                display: 'flex', alignItems: 'center', gap: 14,
+                padding: '12px 16px', borderRadius: 10,
+                background: toolsActivated[i] ? 'rgba(16, 185, 129, 0.06)' : 'transparent',
+                border: `1px solid ${toolsActivated[i] ? 'var(--success)' : 'var(--border)'}`,
+                transition: 'all 0.4s ease',
+              }}>
+                <div style={{
+                  width: 28, height: 28, borderRadius: '50%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: toolsActivated[i] ? 'var(--success)' : 'var(--border)',
+                  transition: 'all 0.4s ease', flexShrink: 0,
+                }}>
+                  {toolsActivated[i]
+                    ? <Check size={14} color="white" />
+                    : <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--text-muted)' }} />
+                  }
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{
+                    fontSize: 14, fontWeight: 600,
+                    color: toolsActivated[i] ? 'var(--text)' : 'var(--text-muted)',
+                    transition: 'color 0.3s',
+                  }}>
+                    {tool.name}
+                  </div>
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{tool.desc}</div>
+                </div>
+                {toolsActivated[i] && (
+                  <span style={{ fontSize: 12, color: 'var(--success)', fontWeight: 600 }}>Active</span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div style={{
+            textAlign: 'center', padding: '20px 24px', borderRadius: 12,
+            background: 'rgba(59, 130, 246, 0.08)',
+            border: '1px solid rgba(59, 130, 246, 0.2)',
+          }}>
+            <div style={{
+              fontSize: 12, color: 'var(--text-muted)', marginBottom: 4,
+              textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600,
+            }}>
+              Your Digital District ID
+            </div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--accent-light)', letterSpacing: 2 }}>
+              {ddid}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Step 5: Connect ── */}
       {step === 5 && (
         <div>
-          <div className="card">
-            <h2 style={{ marginBottom: 16 }}>Connect with Your Community</h2>
-            <h3>Recommended Mentors</h3>
-            <div className="grid-3" style={{ marginBottom: 16 }}>
-              {mentors.map((m, i) => (
-                <div key={i} style={{ padding: 16, background: 'var(--bg)', borderRadius: 'var(--radius)', textAlign: 'center' }}>
-                  <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(139, 92, 246, 0.2)', color: 'var(--purple)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px', fontWeight: 700 }}>
-                    {m.name.split(' ').map(n => n[0]).join('')}
+          {/* Mentors */}
+          <div className="card" style={{ padding: 28, marginBottom: 20 }}>
+            <h2 style={{ fontSize: 20, marginBottom: 4 }}>Get Matched with a Mentor</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: 14, marginBottom: 20 }}>
+              Based on your industry, we recommend these mentors.
+            </p>
+            <div className="grid-3">
+              {getMentors().map((m, i) => (
+                <div key={i} style={{ padding: 20, borderRadius: 12, border: '1px solid var(--border)', textAlign: 'center' }}>
+                  <div style={{
+                    width: 56, height: 56, borderRadius: '50%',
+                    background: 'linear-gradient(135deg, var(--accent), var(--purple))',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    margin: '0 auto 12px', fontWeight: 700, fontSize: 16, color: 'white',
+                  }}>
+                    {m.avatar}
                   </div>
-                  <div style={{ fontWeight: 600, fontSize: 14 }}>{m.name}</div>
-                  <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{m.industry}</div>
-                  <div style={{ color: 'var(--warning)', fontSize: 13, margin: '4px 0' }}>{'★'.repeat(Math.floor(m.rating))} {m.rating}</div>
-                  <button className="btn btn-sm btn-secondary" style={{ marginTop: 4 }}>Request Match</button>
+                  <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4 }}>{m.name}</div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 12 }}>{m.specialty}</div>
+                  <button className="btn btn-primary btn-sm" style={{ width: '100%', justifyContent: 'center' }}>
+                    Request Match
+                  </button>
                 </div>
               ))}
             </div>
           </div>
-          <div className="card">
-            <h3>Upcoming Events</h3>
-            {[
-              { name: 'Entrepreneur Workshop: AI Tools for Your Business', date: 'May 15, 2026 · 6:00 PM', location: 'Delmar Library' },
-              { name: 'Monthly Entrepreneur Meetup', date: 'May 22, 2026 · 5:30 PM', location: 'Cherokee Street Community Center' },
-            ].map((e, i) => (
-              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: i === 0 ? '1px solid var(--border)' : 'none' }}>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: 14 }}>{e.name}</div>
-                  <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{e.date} · {e.location}</div>
+
+          {/* Community Groups */}
+          <div className="card" style={{ padding: 28, marginBottom: 20 }}>
+            <h2 style={{ fontSize: 20, marginBottom: 4 }}>Join Your Neighborhood Group</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: 14, marginBottom: 20 }}>
+              Connect with entrepreneurs near you.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {communityGroups.map((g, i) => (
+                <div key={i} style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '14px 18px', borderRadius: 10, border: '1px solid var(--border)',
+                }}>
+                  <div>
+                    <div style={{ fontWeight: 600, fontSize: 14 }}>{g.name}</div>
+                    <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>
+                      {g.desc}{' '}
+                      <span className="tag tag-blue" style={{ marginLeft: 6 }}>{g.members} members</span>
+                    </div>
+                  </div>
+                  <button className="btn btn-secondary btn-sm">Join</button>
                 </div>
-                <button className="btn btn-sm btn-secondary">RSVP</button>
-              </div>
-            ))}
+              ))}
+            </div>
+          </div>
+
+          {/* Events */}
+          <div className="card" style={{ padding: 28 }}>
+            <h2 style={{ fontSize: 20, marginBottom: 4 }}>Upcoming Events</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: 14, marginBottom: 20 }}>
+              Meet your community in person.
+            </p>
+            <div className="grid-2">
+              {upcomingEvents.map((ev, i) => (
+                <div key={i} style={{ padding: 20, borderRadius: 12, border: '1px solid var(--border)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                    <Calendar size={18} style={{ color: 'var(--accent-light)' }} />
+                    <span style={{ fontWeight: 600, fontSize: 14 }}>{ev.name}</span>
+                  </div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 4 }}>
+                    {ev.date} at {ev.time}
+                  </div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 14 }}>
+                    {ev.location}
+                  </div>
+                  <button className="btn btn-secondary btn-sm">RSVP</button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
 
-      {/* Step 6: Launch */}
+      {/* ── Step 6: Launch ── */}
       {step === 6 && (
-        <div className="card" style={{ textAlign: 'center', padding: 48, border: '2px solid var(--success)', background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(59, 130, 246, 0.05))' }}>
-          <div style={{ fontSize: 48, marginBottom: 8 }}>🚀</div>
-          <h2 style={{ fontSize: 28, marginBottom: 8 }}>You're Ready to Launch!</h2>
-          <p style={{ color: 'var(--text-muted)', maxWidth: 500, margin: '0 auto 24px' }}>
-            {form.firstName ? `${form.firstName}, your` : 'Your'} Digital District tools are active. Your ID is <strong style={{ color: 'var(--accent-light)' }}>{ddId}</strong>. Here's what to do next.
-          </p>
-          <div className="grid-3" style={{ maxWidth: 700, margin: '0 auto' }}>
-            {[
-              { label: 'Open AI Planner', desc: 'Turn your idea into a business plan', color: 'var(--accent-light)' },
-              { label: 'Browse Marketplace', desc: 'See what others are building', color: 'var(--purple)' },
-              { label: 'Meet Your Mentor', desc: 'Get matched with an expert', color: 'var(--success)' },
-            ].map((a, i) => (
-              <div key={i} style={{ padding: 20, background: 'var(--bg-card)', borderRadius: 'var(--radius)', border: '1px solid var(--border)', cursor: 'pointer', transition: 'transform 0.15s' }}>
-                <div style={{ fontWeight: 700, fontSize: 15, color: a.color, marginBottom: 4 }}>{a.label}</div>
-                <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>{a.desc}</div>
+        <div>
+          {/* Celebration card with gradient border */}
+          <div style={{
+            position: 'relative', borderRadius: 'var(--radius)',
+            padding: 2, marginBottom: 24,
+            background: 'linear-gradient(135deg, var(--accent-light), var(--purple), var(--success), var(--accent-light))',
+          }}>
+            <div style={{
+              background: 'var(--bg-card)', borderRadius: 'calc(var(--radius) - 2px)',
+              textAlign: 'center', padding: '48px 32px',
+            }}>
+              <Star size={48} style={{ color: 'var(--warning)', marginBottom: 16 }} />
+              <h2 style={{ fontSize: 28, marginBottom: 8 }}>You are Ready to Launch!</h2>
+              <p style={{ color: 'var(--text-muted)', fontSize: 16, maxWidth: 500, margin: '0 auto' }}>
+                Congratulations{form.firstName ? `, ${form.firstName}` : ''}! Your Digital District
+                account is set up and your tools are ready.
+              </p>
+            </div>
+          </div>
+
+          {/* Summary */}
+          <div className="card" style={{ padding: 28, marginBottom: 24 }}>
+            <h3 style={{ fontSize: 16, marginBottom: 16 }}>Your Summary</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>
+                  Name
+                </div>
+                <div style={{ fontSize: 15, fontWeight: 600 }}>
+                  {form.firstName || form.lastName ? `${form.firstName} ${form.lastName}`.trim() : '\u2014'}
+                </div>
               </div>
-            ))}
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>
+                  Digital District ID
+                </div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--accent-light)' }}>{ddid}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>
+                  Business Idea
+                </div>
+                <div style={{ fontSize: 14 }}>{form.businessIdea || '\u2014'}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>
+                  Industry
+                </div>
+                <div style={{ fontSize: 14 }}>{form.industry || '\u2014'}</div>
+              </div>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>
+                  Recommended Tools
+                </div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {getRecommendedTools().map((t, i) => (
+                    <span key={i} className="tag tag-blue">{t.name}</span>
+                  ))}
+                </div>
+              </div>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>
+                  Mentor Match
+                </div>
+                <div style={{ fontSize: 14 }}>
+                  {getMentors()[0]?.name} — {getMentors()[0]?.specialty}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* What's Next */}
+          <h3 style={{ fontSize: 18, marginBottom: 16 }}>What's Next</h3>
+          <div className="grid-3">
+            <div className="card" style={{ textAlign: 'center', padding: 28, cursor: 'pointer' }}>
+              <Brain size={32} style={{ color: 'var(--accent-light)', marginBottom: 12 }} />
+              <h3 style={{ fontSize: 15, marginBottom: 6 }}>Open AI Business Planner</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>
+                Start building your business plan with AI-powered guidance.
+              </p>
+            </div>
+            <div className="card" style={{ textAlign: 'center', padding: 28, cursor: 'pointer' }}>
+              <Store size={32} style={{ color: 'var(--purple)', marginBottom: 12 }} />
+              <h3 style={{ fontSize: 15, marginBottom: 6 }}>Browse the Marketplace</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>
+                Explore local businesses and find your place in the directory.
+              </p>
+            </div>
+            <div className="card" style={{ textAlign: 'center', padding: 28, cursor: 'pointer' }}>
+              <Heart size={32} style={{ color: 'var(--success)', marginBottom: 12 }} />
+              <h3 style={{ fontSize: 15, marginBottom: 6 }}>Meet Your Mentor</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>
+                Schedule your first conversation with your matched mentor.
+              </p>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Navigation */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
-        {step > 0 ? (
-          <button className="btn btn-secondary" onClick={() => setStep(s => s - 1)}>
-            <ArrowLeft size={16} /> Back
+      {/* ── Navigation ── */}
+      {step > 0 && (
+        <div style={{
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          marginTop: 32, paddingTop: 20, borderTop: '1px solid var(--border)',
+        }}>
+          <button className="btn btn-secondary" onClick={back}>
+            <ChevronLeft size={16} /> Back
           </button>
-        ) : <div />}
-        {step < 6 ? (
-          <button className="btn btn-primary" onClick={() => setStep(s => s + 1)}>
-            {step === 0 ? 'Get Started' : 'Next'} <ArrowRight size={16} />
-          </button>
-        ) : (
-          <button className="btn btn-success" onClick={() => setStep(0)}>
-            Start Over
-          </button>
-        )}
-      </div>
+
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            {(step === 1 || step === 5) && (
+              <button
+                className="btn btn-secondary"
+                onClick={next}
+                style={{ color: 'var(--text-muted)', fontSize: 13 }}
+              >
+                Skip
+              </button>
+            )}
+            {step < totalSteps - 1 && (
+              <button className="btn btn-primary" onClick={next}>
+                Next <ChevronRight size={16} />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

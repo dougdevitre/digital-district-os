@@ -2,7 +2,8 @@ import { Routes, Route, NavLink, useLocation } from 'react-router-dom';
 import {
   Home, ClipboardCheck, BarChart3, MapPin, ListChecks,
   MessageSquare, FileText, Users, Globe, BookOpen,
-  Play, CalendarDays, UserCheck, Megaphone, Presentation, Radio, ShieldCheck
+  Play, CalendarDays, UserCheck, Megaphone, Presentation, Radio, ShieldCheck,
+  GraduationCap, BookMarked, Heart, Library, Rocket, Star
 } from 'lucide-react';
 import Landing from './pages/Landing';
 import Scorecard from './pages/Scorecard';
@@ -21,6 +22,12 @@ import Communications from './pages/Communications';
 import Presentations from './pages/Presentations';
 import MissionControl from './pages/MissionControl';
 import Objections from './pages/Objections';
+import StudentHub from './pages/StudentHub';
+import AcademicPrograms from './pages/AcademicPrograms';
+import MentorNetwork from './pages/MentorNetwork';
+import ResourceLibrary from './pages/ResourceLibrary';
+import OnboardingWizard from './pages/OnboardingWizard';
+import ImpactStories from './pages/ImpactStories';
 
 const navItems = [
   { section: 'Platform', items: [
@@ -41,10 +48,20 @@ const navItems = [
     { path: '/corridor', label: 'Corridor Selector', icon: MapPin },
     { path: '/tracker', label: 'Implementation Tracker', icon: ListChecks },
   ]},
+  { section: 'Entrepreneurs', items: [
+    { path: '/onboarding', label: 'Start a Business', icon: Rocket },
+    { path: '/mentors', label: 'Mentor Network', icon: Heart },
+    { path: '/stories', label: 'Impact Stories', icon: Star },
+  ]},
   { section: 'Communicate', items: [
     { path: '/messaging', label: 'Messaging Generator', icon: MessageSquare },
     { path: '/proposal', label: 'Proposal Builder', icon: FileText },
     { path: '/community', label: 'Community Dashboard', icon: Users },
+    { path: '/resources', label: 'Resource Library', icon: Library },
+  ]},
+  { section: 'Students & Academia', items: [
+    { path: '/students', label: 'Student Hub', icon: GraduationCap },
+    { path: '/programs', label: 'Academic Programs', icon: BookMarked },
   ]},
   { section: 'Scale', items: [
     { path: '/directory', label: 'City Directory', icon: Globe },
@@ -101,6 +118,12 @@ export default function App() {
           <Route path="/community" element={<Community />} />
           <Route path="/directory" element={<Directory />} />
           <Route path="/network" element={<Network />} />
+          <Route path="/students" element={<StudentHub />} />
+          <Route path="/programs" element={<AcademicPrograms />} />
+          <Route path="/mentors" element={<MentorNetwork />} />
+          <Route path="/resources" element={<ResourceLibrary />} />
+          <Route path="/onboarding" element={<OnboardingWizard />} />
+          <Route path="/stories" element={<ImpactStories />} />
         </Routes>
       </main>
     </div>

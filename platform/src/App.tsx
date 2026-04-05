@@ -1,7 +1,8 @@
 import { Routes, Route, NavLink, useLocation } from 'react-router-dom';
 import {
   Home, ClipboardCheck, BarChart3, MapPin, ListChecks,
-  MessageSquare, FileText, Users, Globe, BookOpen
+  MessageSquare, FileText, Users, Globe, BookOpen,
+  Play, CalendarDays, UserCheck, Megaphone, Presentation, Radio, ShieldCheck
 } from 'lucide-react';
 import Landing from './pages/Landing';
 import Scorecard from './pages/Scorecard';
@@ -13,23 +14,39 @@ import Proposal from './pages/Proposal';
 import Community from './pages/Community';
 import Directory from './pages/Directory';
 import Network from './pages/Network';
+import Workflow from './pages/Workflow';
+import Timeline from './pages/Timeline';
+import Stakeholders from './pages/Stakeholders';
+import Communications from './pages/Communications';
+import Presentations from './pages/Presentations';
+import MissionControl from './pages/MissionControl';
+import Objections from './pages/Objections';
 
 const navItems = [
   { section: 'Platform', items: [
     { path: '/', label: 'Home', icon: Home },
+    { path: '/mission-control', label: 'Mission Control', icon: Radio },
   ]},
-  { section: 'Tier 1: Interactive Tools', items: [
+  { section: 'Workflow Assistant', items: [
+    { path: '/workflow', label: 'Guided Workflow', icon: Play },
+    { path: '/timeline', label: 'Timeline & Tasks', icon: CalendarDays },
+    { path: '/stakeholders', label: 'Stakeholder Tracker', icon: UserCheck },
+    { path: '/communications', label: 'PR & Comms Calendar', icon: Megaphone },
+    { path: '/presentations', label: 'Presentations', icon: Presentation },
+    { path: '/objections', label: 'Objection Handler', icon: ShieldCheck },
+  ]},
+  { section: 'Assess & Plan', items: [
     { path: '/scorecard', label: 'Readiness Scorecard', icon: ClipboardCheck },
     { path: '/dashboard', label: 'Leadership Dashboard', icon: BarChart3 },
     { path: '/corridor', label: 'Corridor Selector', icon: MapPin },
     { path: '/tracker', label: 'Implementation Tracker', icon: ListChecks },
   ]},
-  { section: 'Tier 2: Communication', items: [
+  { section: 'Communicate', items: [
     { path: '/messaging', label: 'Messaging Generator', icon: MessageSquare },
     { path: '/proposal', label: 'Proposal Builder', icon: FileText },
     { path: '/community', label: 'Community Dashboard', icon: Users },
   ]},
-  { section: 'Tier 3: Multi-City', items: [
+  { section: 'Scale', items: [
     { path: '/directory', label: 'City Directory', icon: Globe },
     { path: '/network', label: 'Peer Network', icon: BookOpen },
   ]},
@@ -68,6 +85,13 @@ export default function App() {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/mission-control" element={<MissionControl />} />
+          <Route path="/workflow" element={<Workflow />} />
+          <Route path="/timeline" element={<Timeline />} />
+          <Route path="/stakeholders" element={<Stakeholders />} />
+          <Route path="/communications" element={<Communications />} />
+          <Route path="/presentations" element={<Presentations />} />
+          <Route path="/objections" element={<Objections />} />
           <Route path="/scorecard" element={<Scorecard />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/corridor" element={<Corridor />} />

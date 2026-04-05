@@ -590,6 +590,207 @@ th {
   margin-bottom: 12px;
 }
 
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.card {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.stat-card {
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+/* Mission Control specific */
+.status-strip {
+  display: flex;
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.status-strip-item {
+  flex: 1;
+  background: var(--bg-card);
+  padding: 16px 20px;
+  text-align: center;
+}
+
+.status-strip-item:first-child {
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+
+.status-strip-item:last-child {
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.status-strip-item .strip-value {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.status-strip-item .strip-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+/* Pulse dot for live indicators */
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Quick action buttons */
+.quick-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.quick-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.quick-action:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  text-decoration: none;
+  color: var(--text);
+}
+
+.quick-action svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Activity feed */
+.activity-item {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  animation: slideIn 0.3s ease-out;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+/* Objection card styles */
+.objection-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 12px;
+  transition: border-color 0.15s;
+}
+
+.objection-card:hover {
+  border-color: var(--purple);
+}
+
+.objection-question {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--danger);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: start;
+  gap: 8px;
+}
+
+.objection-response {
+  font-size: 14px;
+  line-height: 1.7;
+  padding-left: 26px;
+}
+
+.objection-tip {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--bg);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-left: 26px;
+}
+
+/* Badge variant for mission control */
+.badge-mission {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+  color: var(--accent-light);
+}
+
+/* Grid-5 */
+.grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; }
+
+/* Improved scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
 @media (max-width: 1024px) {
   .grid-4 { grid-template-columns: 1fr 1fr; }
   .grid-3 { grid-template-columns: 1fr 1fr; }

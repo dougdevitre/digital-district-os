@@ -3,7 +3,7 @@ import {
   Play, CalendarDays, UserCheck, Megaphone, Presentation,
   ClipboardCheck, BarChart3, MapPin, ListChecks,
   MessageSquare, FileText, Users, Globe, BookOpen,
-  ArrowRight, Radio, ShieldQuestion
+  ArrowRight, Radio, ShieldQuestion, GraduationCap, BookMarked
 } from 'lucide-react';
 import { workflowSteps, phaseNames } from '../data/workflow';
 
@@ -167,6 +167,23 @@ export default function Landing() {
             <Link to="/community" className="feature-card">
               <h3><Users size={18} /> Community Dashboard</h3>
               <p>Public-facing impact metrics and business spotlights.</p>
+            </Link>
+          </div>
+        </div>
+
+        {/* Students */}
+        <div className="tier-section">
+          <span className="page-badge badge-tier2">Students & Academia</span>
+          <h2>Get Students Involved</h2>
+          <p className="tier-desc">12 program tracks, 8 capstone projects, 6 paid internships, and 15 academic pathways — mapped to every major.</p>
+          <div className="grid-2">
+            <Link to="/students" className="feature-card">
+              <h3><GraduationCap size={18} /> Student Engagement Hub</h3>
+              <p>Program tracks, capstone briefs, internships, and faculty integration — everything students need to contribute.</p>
+            </Link>
+            <Link to="/programs" className="feature-card">
+              <h3><BookMarked size={18} /> Academic Programs</h3>
+              <p>Select your major and see exactly how it maps to DD workstreams, skills, and career pathways.</p>
             </Link>
           </div>
         </div>

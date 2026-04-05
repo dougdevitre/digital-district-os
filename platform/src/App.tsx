@@ -2,7 +2,8 @@ import { Routes, Route, NavLink, useLocation } from 'react-router-dom';
 import {
   Home, ClipboardCheck, BarChart3, MapPin, ListChecks,
   MessageSquare, FileText, Users, Globe, BookOpen,
-  Play, CalendarDays, UserCheck, Megaphone, Presentation, Radio, ShieldCheck
+  Play, CalendarDays, UserCheck, Megaphone, Presentation, Radio, ShieldCheck,
+  GraduationCap, BookMarked
 } from 'lucide-react';
 import Landing from './pages/Landing';
 import Scorecard from './pages/Scorecard';
@@ -21,6 +22,8 @@ import Communications from './pages/Communications';
 import Presentations from './pages/Presentations';
 import MissionControl from './pages/MissionControl';
 import Objections from './pages/Objections';
+import StudentHub from './pages/StudentHub';
+import AcademicPrograms from './pages/AcademicPrograms';
 
 const navItems = [
   { section: 'Platform', items: [
@@ -45,6 +48,10 @@ const navItems = [
     { path: '/messaging', label: 'Messaging Generator', icon: MessageSquare },
     { path: '/proposal', label: 'Proposal Builder', icon: FileText },
     { path: '/community', label: 'Community Dashboard', icon: Users },
+  ]},
+  { section: 'Students & Academia', items: [
+    { path: '/students', label: 'Student Hub', icon: GraduationCap },
+    { path: '/programs', label: 'Academic Programs', icon: BookMarked },
   ]},
   { section: 'Scale', items: [
     { path: '/directory', label: 'City Directory', icon: Globe },
@@ -101,6 +108,8 @@ export default function App() {
           <Route path="/community" element={<Community />} />
           <Route path="/directory" element={<Directory />} />
           <Route path="/network" element={<Network />} />
+          <Route path="/students" element={<StudentHub />} />
+          <Route path="/programs" element={<AcademicPrograms />} />
         </Routes>
       </main>
     </div>

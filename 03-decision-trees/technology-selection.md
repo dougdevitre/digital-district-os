@@ -4,6 +4,39 @@
 
 Choose the simplest, most open, most secure technology that solves the problem. Prefer managed services over self-hosted. Prefer open standards over proprietary. Prefer serverless over servers.
 
+```mermaid
+flowchart TD
+    Start["Technology Decision"] --> L1["Layer 1: Infrastructure"]
+    Start --> L2["Layer 2: Intelligence"]
+    Start --> L3["Layer 3: Applications"]
+    L1 --> Cloud{"Existing cloud?"}
+    Cloud -->|Yes| Keep["Use existing provider"]
+    Cloud -->|No| AWS["Default: AWS"]
+    L1 --> Compute{"Traffic pattern?"}
+    Compute -->|Bursty| Lambda["Lambda (serverless)"]
+    Compute -->|Steady| Fargate["Fargate (containers)"]
+    L1 --> DB{"Data type?"}
+    DB -->|Key-value| Dynamo["DynamoDB"]
+    DB -->|Complex queries| Postgres["Aurora PostgreSQL"]
+    DB -->|Search| OpenSearch["OpenSearch"]
+    DB -->|Files| S3["S3"]
+    L2 --> AI{"AI need?"}
+    AI -->|General| Claude["Claude API"]
+    AI -->|Custom| Prompt["Prompt Engineering<br/>NOT fine-tuning"]
+    L2 --> Auto{"Automation?"}
+    Auto -->|Simple| EB["Lambda + EventBridge"]
+    Auto -->|Medium| SF["Step Functions"]
+    Auto -->|Complex| N8N["n8n or Make"]
+    L3 --> Build{"Core to DD?"}
+    Build -->|Yes| Custom["Build: React + Lambda"]
+    Build -->|Commodity| Buy["Buy: Stripe, SES, etc."]
+    Build -->|OSS exists| Fork["Fork + Customize"]
+    style Start fill:#8b5cf6,color:#fff
+    style L1 fill:#10b981,color:#fff
+    style L2 fill:#3b82f6,color:#fff
+    style L3 fill:#06b6d4,color:#fff
+```
+
 ## Layer 1: Infrastructure Decisions
 
 ### Cloud Provider

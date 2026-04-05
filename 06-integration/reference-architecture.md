@@ -39,6 +39,37 @@
         └─────────────────────────────────────────────────────────┘
 ```
 
+### System Architecture (Mermaid)
+
+```mermaid
+graph TB
+    Client["Client Browser"] --> CDN["CloudFront<br/>CDN + WAF"]
+    CDN --> Static["S3<br/>Static Site"]
+    CDN --> APIGW["API Gateway<br/>Auth + Rate Limit"]
+    CDN --> MCP["MCP Server<br/>Lambda"]
+    APIGW --> IdSvc["Identity<br/>Service"]
+    APIGW --> BizSvc["Business<br/>Service"]
+    APIGW --> AISvc["Intelligence<br/>Service"]
+    IdSvc --> Cognito["Cognito"]
+    IdSvc --> DDB1["DynamoDB<br/>Profiles"]
+    BizSvc --> DDB2["DynamoDB<br/>Businesses"]
+    AISvc --> Claude["Claude API"]
+    AISvc --> S3["S3<br/>Skill Configs"]
+    MCP --> APIGW
+    subgraph Cross["Cross-Cutting Services"]
+        CW["CloudWatch"]
+        XR["X-Ray"]
+        KMS["KMS"]
+        EB["EventBridge"]
+    end
+    style CDN fill:#06b6d4,color:#fff
+    style APIGW fill:#3b82f6,color:#fff
+    style IdSvc fill:#8b5cf6,color:#fff
+    style BizSvc fill:#8b5cf6,color:#fff
+    style AISvc fill:#8b5cf6,color:#fff
+    style Cross fill:#1e293b,color:#94a3b8,stroke:#1e293b
+```
+
 ## Service Boundaries
 
 | Service | Responsibility | Data Store | Key APIs |

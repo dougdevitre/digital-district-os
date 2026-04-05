@@ -24,6 +24,30 @@ Every Digital District API domain should have a corresponding MCP (Model Context
 └──────────────────────────┘
 ```
 
+### MCP Request Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Claude as Claude AI
+    participant MCP as MCP Server
+    participant API as DD API Gateway
+    participant Svc as Lambda Service
+    participant DB as DynamoDB
+    User->>Claude: "Find businesses on Delmar"
+    Claude->>MCP: search_businesses(corridor="Delmar")
+    MCP->>MCP: Validate input + attach auth
+    MCP->>API: GET /api/v1/directory?corridor=Delmar
+    API->>API: Verify JWT + rate limit
+    API->>Svc: Invoke Lambda
+    Svc->>DB: Query businesses table
+    DB-->>Svc: Results
+    Svc-->>API: 200 OK + JSON
+    API-->>MCP: Response
+    MCP-->>Claude: Formatted results
+    Claude-->>User: "Found 67 businesses on Delmar..."
+```
+
 ## Standard MCP Servers to Build
 
 | Server Name | API Domain | Key Tools | Priority |

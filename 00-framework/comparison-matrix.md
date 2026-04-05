@@ -37,6 +37,21 @@ When assessing a city's position, rate each dimension 1-5:
 
 Most cities will not jump from 1 to 5 on any dimension. The typical progression:
 
+```mermaid
+graph LR
+    L["Legacy<br/>Score: 1"] --> H["Hybrid<br/>Score: 2-3"]
+    H --> DF["Digital-First<br/>Score: 4"]
+    DF --> DN["Digital-Native<br/>Score: 5"]
+    L --- L1["Physical district only<br/>No digital layer"]
+    H --- H1["Some digital elements<br/>Physical still dominates"]
+    DF --- DF1["Digital leads<br/>Physical = specialized nodes"]
+    DN --- DN1["Digital is the OS<br/>Focus on interoperability"]
+    style L fill:#ef4444,color:#fff
+    style H fill:#f59e0b,color:#fff
+    style DF fill:#3b82f6,color:#fff
+    style DN fill:#10b981,color:#fff
+```
+
 ```
 Legacy → Hybrid → Digital-First → Digital-Native
   1         2-3        4              5

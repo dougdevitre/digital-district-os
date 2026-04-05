@@ -71,6 +71,31 @@ This is not a token advisory role. The veto is real and enforceable.
 
 ## Decision-Making Process
 
+```mermaid
+flowchart TD
+    Decision["New Decision"] --> Impact{"Impact > $50K<br/>or irreversible?"}
+    Impact -->|No| Standard["Standard Process"]
+    Impact -->|Yes| Major["Major Process"]
+    Impact -->|"Security/urgent"| Emergency["Emergency Process"]
+    Standard --> S1["Team proposes"]
+    S1 --> S2["Working group reviews<br/>(48 hours)"]
+    S2 --> S3{"Objections?"}
+    S3 -->|No| S4["Team proceeds<br/>Board informed"]
+    S3 -->|Yes| Major
+    Major --> M1["Team prepares options"]
+    M1 --> M2["Working groups review<br/>(1 week)"]
+    M2 --> M3["Community Advisory<br/>reviews (1 week)"]
+    M3 --> M4["Board votes<br/>(majority, quorum=5)"]
+    M4 --> M5["Decision published"]
+    Emergency --> E1["Team acts immediately"]
+    E1 --> E2["Board chair notified<br/>(2 hours)"]
+    E2 --> E3["Full board briefed<br/>(24 hours)"]
+    E3 --> E4["Retrospective at<br/>next meeting"]
+    style Standard fill:#10b981,color:#fff
+    style Major fill:#3b82f6,color:#fff
+    style Emergency fill:#ef4444,color:#fff
+```
+
 ### Standard Decisions (< $50K impact, reversible)
 1. Operational team proposes
 2. Relevant working group reviews (48 hours)

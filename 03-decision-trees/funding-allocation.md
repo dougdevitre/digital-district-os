@@ -6,6 +6,28 @@ When public capital is available for economic development, should it go to physi
 
 ## Decision Framework
 
+```mermaid
+flowchart TD
+    Start["Public Capital Available<br/>for Economic Development"] --> Q1{"What problem<br/>are you solving?"}
+    Q1 -->|"Need office/lab space"| C1{"Existing space<br/>occupancy > 80%?"}
+    C1 -->|No| BW1["Fund Bandwidth<br/>Generate demand first"]
+    C1 -->|Yes| Q2{"Can it be<br/>virtualized?"}
+    Q1 -->|"Attract talent"| BW2["Fund Bandwidth<br/>Tools attract talent,<br/>not buildings"]
+    Q1 -->|"Jobs in underserved areas"| BW3["Fund Bandwidth<br/>Deploys in months,<br/>doesn't raise rents"]
+    Q1 -->|"Specialized lab/mfg space"| Q2
+    Q2 -->|Yes| BW4["Fund Bandwidth"]
+    Q2 -->|No| ROI{"Apply ROI Test:<br/>Serves 500+ people?<br/>Operational in 3 years?<br/>Benefits underserved?"}
+    ROI -->|"Any test fails"| BW5["Fund Bandwidth"]
+    ROI -->|"All pass"| Hybrid["Hybrid Split<br/>30% Physical / 70% Digital"]
+    style BW1 fill:#10b981,color:#fff
+    style BW2 fill:#10b981,color:#fff
+    style BW3 fill:#10b981,color:#fff
+    style BW4 fill:#10b981,color:#fff
+    style BW5 fill:#10b981,color:#fff
+    style Hybrid fill:#3b82f6,color:#fff
+    style Start fill:#8b5cf6,color:#fff
+```
+
 ### Step 1: What problem are you solving?
 
 **A. "We need more office/lab space for startups"**

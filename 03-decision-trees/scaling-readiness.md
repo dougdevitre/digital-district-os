@@ -2,6 +2,27 @@
 
 ## When to Expand from Street → City → Region
 
+```mermaid
+flowchart LR
+    S["Single<br/>Corridor"] -->|Gate 1| MC["Multi-<br/>Corridor"]
+    MC -->|Gate 2| CW["Citywide"]
+    CW -->|Gate 3| RG["Regional<br/>Network"]
+    RG -->|Gate 4| NT["National<br/>Model"]
+    G1["100+ businesses<br/>50% retention<br/>99% uptime<br/>Funding secured"]
+    G2["3+ corridors<br/>500+ businesses<br/>15% cross-corridor<br/>Equity on track"]
+    G3["1000+ businesses<br/>DDIS Level 2<br/>1+ federation<br/>Legal framework"]
+    G4["3+ jurisdictions<br/>DDIS Level 3<br/>2+ city forks<br/>Sustainable funding"]
+    G1 -.-> S
+    G2 -.-> MC
+    G3 -.-> CW
+    G4 -.-> RG
+    style S fill:#f59e0b,color:#fff
+    style MC fill:#3b82f6,color:#fff
+    style CW fill:#8b5cf6,color:#fff
+    style RG fill:#06b6d4,color:#fff
+    style NT fill:#10b981,color:#fff
+```
+
 ### Gate 1: Street to Multi-Corridor
 
 **Are ALL of these true?**

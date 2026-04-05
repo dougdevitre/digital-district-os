@@ -64,6 +64,31 @@ Example: Digital district authority (recommended for scaled deployments)
 
 ## Decision Flow
 
+```mermaid
+flowchart TD
+    Start{"Who is the<br/>primary champion?"} --> Mayor["Mayor / City Executive"]
+    Start --> Univ["University / Hospital"]
+    Start --> Comm["Community Organization"]
+    Start --> None["No clear champion"]
+    Mayor --> IT{"City IT<br/>team capable?"}
+    IT -->|Yes| TypeA["Type A: City-Led<br/>→ Transition to Type D at Phase 3"]
+    IT -->|No| TypeD1["Type D: Independent<br/>City funds, doesn't execute"]
+    Univ --> Trust{"Community trust<br/>in institution high?"}
+    Trust -->|Yes| TypeB["Type B: Anchor-Led<br/>→ Transition to Type D at Phase 3"]
+    Trust -->|No| TypeCD["Type C or D<br/>Institution supports,<br/>community leads"]
+    Comm --> Tech{"Org has<br/>technical capacity?"}
+    Tech -->|Yes| TypeC["Type C: Community-Led<br/>Partner with institutions"]
+    Tech -->|No| TypeD2["Type D: Independent<br/>Community on board,<br/>tech partner executes"]
+    None --> Build["Build the coalition first<br/>No deployment until<br/>champion identified"]
+    style TypeA fill:#3b82f6,color:#fff
+    style TypeB fill:#8b5cf6,color:#fff
+    style TypeC fill:#10b981,color:#fff
+    style TypeD1 fill:#06b6d4,color:#fff
+    style TypeD2 fill:#06b6d4,color:#fff
+    style TypeCD fill:#f59e0b,color:#fff
+    style Build fill:#ef4444,color:#fff
+```
+
 ```
 Who is the primary champion?
 

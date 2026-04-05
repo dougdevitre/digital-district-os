@@ -32,6 +32,23 @@ The Digital District Stack is a 4-layer model that defines the minimum viable in
 └─────────────────────────────────────────────────────────────┘
 ```
 
+### Deployment Sequence
+
+```mermaid
+graph LR
+    L1["Layer 1<br/>Infrastructure"] --> L2["Layer 2<br/>Intelligence"]
+    L2 --> L3["Layer 3<br/>Applications"]
+    L3 --> L4["Layer 4<br/>Distribution"]
+    L1 --- L1a["Cloud + Wi-Fi<br/>+ Identity"]
+    L2 --- L2a["AI Models<br/>+ Automation"]
+    L3 --- L3a["Business Tools<br/>+ Marketplace"]
+    L4 --- L4a["APIs + App Store<br/>+ Content"]
+    style L1 fill:#10b981,color:#fff
+    style L2 fill:#3b82f6,color:#fff
+    style L3 fill:#8b5cf6,color:#fff
+    style L4 fill:#06b6d4,color:#fff
+```
+
 ## Layer 1: Infrastructure
 
 **Purpose:** Provide the foundational compute, connectivity, and identity systems.

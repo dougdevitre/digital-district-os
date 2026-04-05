@@ -3,10 +3,16 @@ import {
   Play, CalendarDays, UserCheck, Megaphone, Presentation,
   ClipboardCheck, BarChart3, MapPin, ListChecks,
   MessageSquare, FileText, Users, Globe, BookOpen,
-  ArrowRight
+  ArrowRight, Radio, ShieldQuestion
 } from 'lucide-react';
+import { workflowSteps, phaseNames } from '../data/workflow';
 
 export default function Landing() {
+  const totalSteps = workflowSteps.length;
+  const completedSteps = workflowSteps.filter((s) => s.status === 'completed').length;
+  const phases = Object.entries(phaseNames);
+  const nextStep = workflowSteps.find((s) => s.status !== 'completed');
+
   return (
     <div>
       <div className="hero">
@@ -17,12 +23,45 @@ export default function Landing() {
           conversation, guided and coordinated.
         </p>
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-          <Link to="/workflow" className="btn btn-primary"><Play size={16} /> Start Workflow</Link>
-          <Link to="/scorecard" className="btn btn-secondary">Assess Readiness</Link>
+          <Link to="/mission-control" className="btn btn-primary"><Radio size={16} /> Mission Control</Link>
+          <Link to="/workflow" className="btn btn-secondary"><Play size={16} /> Start Workflow</Link>
         </div>
       </div>
 
+      {/* Live Progress Strip */}
       <div style={{ maxWidth: 900, margin: '0 auto' }}>
+        <div className="status-strip" style={{ marginBottom: 32 }}>
+          <div className="status-strip-item">
+            <div className="strip-value" style={{ color: 'var(--success)' }}>{completedSteps}/{totalSteps}</div>
+            <div className="strip-label">Steps Complete</div>
+          </div>
+          {phases.map(([key, val]) => {
+            const phaseSteps = workflowSteps.filter((s) => s.phase === Number(key));
+            const done = phaseSteps.filter((s) => s.status === 'completed').length;
+            const pct = phaseSteps.length > 0 ? Math.round((done / phaseSteps.length) * 100) : 0;
+            return (
+              <div key={key} className="status-strip-item">
+                <div className="strip-value" style={{ color: val.color }}>{pct}%</div>
+                <div className="strip-label">P{key}: {val.name}</div>
+              </div>
+            );
+          })}
+        </div>
+
+        {nextStep && (
+          <div className="card" style={{ borderColor: 'var(--accent)', marginBottom: 32 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+              <ArrowRight size={16} color="var(--accent-light)" />
+              <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--accent-light)', textTransform: 'uppercase', letterSpacing: 0.5 }}>Next Step</span>
+            </div>
+            <p style={{ fontWeight: 600, fontSize: 16 }}>{nextStep.title}</p>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>{nextStep.description}</p>
+            <div style={{ marginTop: 8 }}>
+              <Link to="/workflow" className="btn btn-sm btn-primary">Open Workflow</Link>
+            </div>
+          </div>
+        )}
+
         {/* How it works */}
         <div className="card" style={{ marginBottom: 32, textAlign: 'center' }}>
           <h2 style={{ marginBottom: 16 }}>How This Platform Works</h2>
@@ -74,10 +113,14 @@ export default function Landing() {
               <p>Sequenced communications plan: internal briefings, media outreach, community updates, and social media.</p>
             </Link>
           </div>
-          <div style={{ marginTop: 12 }}>
+          <div className="grid-2" style={{ marginTop: 12 }}>
             <Link to="/presentations" className="feature-card">
               <h3><Presentation size={18} /> Presentation Generator</h3>
-              <p>Slide-ready content with speaker notes for kickoffs, council briefings, community sessions, investor pitches, milestone reports, and media briefings.</p>
+              <p>Slide-ready content with speaker notes for kickoffs, council briefings, investor pitches, and more.</p>
+            </Link>
+            <Link to="/objections" className="feature-card">
+              <h3><ShieldQuestion size={18} /> Objection Handler</h3>
+              <p>Instant responses to stakeholder pushback on cost, technology, equity, and politics.</p>
             </Link>
           </div>
         </div>

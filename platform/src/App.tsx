@@ -2,7 +2,7 @@ import { Routes, Route, NavLink, useLocation } from 'react-router-dom';
 import {
   Home, ClipboardCheck, BarChart3, MapPin, ListChecks,
   MessageSquare, FileText, Users, Globe, BookOpen,
-  Play, CalendarDays, UserCheck, Megaphone, Presentation
+  Play, CalendarDays, UserCheck, Megaphone, Presentation, Radio, ShieldCheck
 } from 'lucide-react';
 import Landing from './pages/Landing';
 import Scorecard from './pages/Scorecard';
@@ -19,10 +19,13 @@ import Timeline from './pages/Timeline';
 import Stakeholders from './pages/Stakeholders';
 import Communications from './pages/Communications';
 import Presentations from './pages/Presentations';
+import MissionControl from './pages/MissionControl';
+import Objections from './pages/Objections';
 
 const navItems = [
   { section: 'Platform', items: [
     { path: '/', label: 'Home', icon: Home },
+    { path: '/mission-control', label: 'Mission Control', icon: Radio },
   ]},
   { section: 'Workflow Assistant', items: [
     { path: '/workflow', label: 'Guided Workflow', icon: Play },
@@ -30,6 +33,7 @@ const navItems = [
     { path: '/stakeholders', label: 'Stakeholder Tracker', icon: UserCheck },
     { path: '/communications', label: 'PR & Comms Calendar', icon: Megaphone },
     { path: '/presentations', label: 'Presentations', icon: Presentation },
+    { path: '/objections', label: 'Objection Handler', icon: ShieldCheck },
   ]},
   { section: 'Assess & Plan', items: [
     { path: '/scorecard', label: 'Readiness Scorecard', icon: ClipboardCheck },
@@ -81,11 +85,13 @@ export default function App() {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/mission-control" element={<MissionControl />} />
           <Route path="/workflow" element={<Workflow />} />
           <Route path="/timeline" element={<Timeline />} />
           <Route path="/stakeholders" element={<Stakeholders />} />
           <Route path="/communications" element={<Communications />} />
           <Route path="/presentations" element={<Presentations />} />
+          <Route path="/objections" element={<Objections />} />
           <Route path="/scorecard" element={<Scorecard />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/corridor" element={<Corridor />} />

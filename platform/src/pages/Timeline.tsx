@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { workflowSteps, phaseNames, getWeekDate, formatDate } from '../data/workflow';
 import { Calendar, Filter } from 'lucide-react';
 
-const TOTAL_WEEKS = 40;
+const TOTAL_WEEKS = Math.max(80, ...workflowSteps.map((s) => s.week + Math.ceil(s.durationDays / 7)));
 const ROW_HEIGHT = 36;
 
 const typeColors: Record<string, string> = {
